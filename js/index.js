@@ -119,5 +119,5 @@ const PROJECTS = [
       console.error('Error cargando componente', id, err);
     }
   }
-  loadComponent('main-nav', 'html/navigation.html');
-  loadComponent('main-footer', 'html/footer.html');
+loadComponent('main-nav', '/Portfolio.Sergio.B.github.io/html/navigation.html');
+loadComponent('main-footer', '/Portfolio.Sergio.B.github.io/html/footer.html');
