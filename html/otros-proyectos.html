@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otros Proyectos — Sergio Berraco</title>
+  <meta name="description" content="Proyectos adicionales de Sergio Berraco.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="stylesheet" href="../styles/lateralPanel.css">
+
+</head>
+<body>
+
+<nav id="main-nav">
+
+</nav>
+
+<!-- Cabecera de sección -->
+<section id="otros-proyectos" style="padding-bottom: 32px;">
+  <div class="sec-label">Archivo</div>
+  <h2>Otros Proyectos</h2>
+</section>
+
+<!-- Layout de dos columnas -->
+<div class="op-layout">
+
+  <!-- Panel lateral -->
+  <aside class="op-sidebar">
+    <div class="op-sidebar-label">Índice</div>
+    <div class="op-sidebar-list" id="op-sidebar-list">
+      <!-- Se genera dinámicamente desde el array PROJECTS -->
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="op-content">
+    <div class="op-viewer-header">
+      <span class="op-viewer-counter" id="op-counter"></span>
+      <div class="op-viewer-arrows">
+        <button class="op-arrow" id="op-prev" onclick="opNavigate(-1)" aria-label="Proyecto anterior">&#8249;</button>
+        <button class="op-arrow" id="op-next" onclick="opNavigate(1)" aria-label="Proyecto siguiente">&#8250;</button>
+      </div>
+    </div>
+    <div class="op-viewer" id="op-viewer">
+      <div class="op-loading">Cargando...</div>
+    </div>
+  </main>
+
+</div>
+
+<footer id="main-footer">
+
+</footer>
+
+<script src="../js/otrosProyectos.js"></script>
+
+</body>
+</html>
