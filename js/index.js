@@ -120,5 +120,4 @@ const PROJECTS = [
     }
   }
 
-  loadComponent('main-nav', 'html/navigation.html');
   loadComponent('main-footer', 'html/footer.html');
