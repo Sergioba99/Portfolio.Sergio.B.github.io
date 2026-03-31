@@ -89,7 +89,7 @@
   <div class="sec-label">Trabajos</div>
   <h2>Proyectos Seleccionados</h2>
 
-<!-- Barra de navegación: solo botones numerados -->
+  <!-- Botones numerados -->
   <div class="pv-nav">
     <button class="pv-btn active" onclick="loadProject(0)">01</button>
     <button class="pv-btn" onclick="loadProject(1)">02</button>
@@ -97,21 +97,16 @@
     <button class="pv-btn" onclick="loadProject(3)">04</button>
     <button class="pv-btn" onclick="loadProject(4)">05</button>
   </div>
+</section>
 
-  <!-- Visor con flechas laterales -->
-  <div class="pv-wrapper">
-    <button class="pv-arrow pv-arrow-left" id="pv-prev" onclick="navigateProject(-1)" aria-label="Proyecto anterior">&#8249;</button>
-    <div class="pv-viewer" id="pv-viewer">
-      <div class="pv-loading">Cargando proyecto...</div>
-    </div>
-    <button class="pv-arrow pv-arrow-right" id="pv-next" onclick="navigateProject(1)" aria-label="Proyecto siguiente">&#8250;</button>
-  </div>
-
-  <!-- Área de contenido cargada dinámicamente -->
+<!-- Visor ancho completo con flechas a los lados -->
+<div class="pv-wrapper">
+  <button class="pv-arrow" id="pv-prev" onclick="navigateProject(-1)" aria-label="Proyecto anterior">&#8249;</button>
   <div class="pv-viewer" id="pv-viewer">
     <div class="pv-loading">Cargando proyecto...</div>
   </div>
-</section>
+  <button class="pv-arrow" id="pv-next" onclick="navigateProject(1)" aria-label="Proyecto siguiente">&#8250;</button>
+</div>
 
 <div class="divider"></div>
 
@@ -138,14 +133,10 @@
 </footer>
 
 <script>
-  /* ── LISTA DE PROYECTOS ──────────────────────────────────────────
-     Para añadir un proyecto:
-       1. Crea el archivo HTML en la carpeta projects/
-       2. Añade una entrada a este array con el nombre del archivo
-     Para quitar un proyecto de la página principal:
-       1. Comenta o elimina su entrada del array
-       2. Actualiza también el número de botones en el HTML de arriba
-  ────────────────────────────────────────────────────────────────── */
+  /* ── LISTA DE PROYECTOS ────────────────────────────────────────
+     Ajusta los nombres de archivo a los que tienes en GitHub.
+     El orden aquí corresponde a los botones 01, 02, 03, 04, 05.
+  ──────────────────────────────────────────────────────────────── */
   const PROJECTS = [
     'projects/tfg.html',
     'projects/replital.html',
@@ -155,8 +146,8 @@
   ];
 
   let currentIndex = 0;
-  const viewer = document.getElementById('pv-viewer');
-  const btns = document.querySelectorAll('.pv-btn');
+  const viewer  = document.getElementById('pv-viewer');
+  const btns    = document.querySelectorAll('.pv-btn');
   const prevBtn = document.getElementById('pv-prev');
   const nextBtn = document.getElementById('pv-next');
 
@@ -167,15 +158,9 @@
 
   function loadProject(index) {
     currentIndex = index;
-
-    // Actualizar botones numéricos
     btns.forEach((b, i) => b.classList.toggle('active', i === index));
     updateArrows();
-
-    // Mostrar estado de carga
     viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
-
-    // Cargar el fragmento HTML del proyecto
     fetch(PROJECTS[index])
       .then(res => {
         if (!res.ok) throw new Error('No encontrado');
@@ -184,9 +169,8 @@
       .then(html => {
         viewer.innerHTML = html;
         viewer.classList.remove('pv-fade');
-        void viewer.offsetWidth; // forzar reflow para reiniciar animación
+        void viewer.offsetWidth;
         viewer.classList.add('pv-fade');
-        // Inicializar carruseles si el proyecto tiene imágenes
         viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
       })
       .catch(() => {
@@ -199,13 +183,12 @@
     if (next >= 0 && next < PROJECTS.length) loadProject(next);
   }
 
-  // Navegación con teclas de flecha
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft')  navigateProject(-1);
     if (e.key === 'ArrowRight') navigateProject(1);
   });
 
-  /* ── CARRUSEL DE IMÁGENES ── */
+  /* ── CARRUSEL ── */
   function initCarousel(id) {
     const carousel = document.getElementById(id);
     if (!carousel) return;
@@ -253,7 +236,6 @@
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
-  // Cargar el primer proyecto al arrancar
   loadProject(0);
 </script>
 
