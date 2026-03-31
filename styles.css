@@ -461,3 +461,47 @@ footer {
   h1 { font-size: 26px; }
   .stack-grid { grid-template-columns: 1fr; }
 }
+
+/* ── VISOR DE PROYECTOS ── */
+.pv-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.pv-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.pv-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.pv-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pv-viewer {
+  position: relative;
+}
+.pv-panel {
+  display: none;
+  animation: pvFade 0.2s ease;
+}
+.pv-panel.active {
+  display: block;
+}
+@keyframes pvFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
