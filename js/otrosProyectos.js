@@ -6,6 +6,7 @@
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
   const ASSET_VERSION = '20260407';
+  const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
 
   const PROJECTS = [
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
@@ -66,7 +67,7 @@
     currentIndex = index;
     updateControls();
     viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
-    fetch(`${PROJECTS[index].file}?v=${ASSET_VERSION}`)
+    fetch(`${PROJECT_BASE}${PROJECTS[index].file}?v=${ASSET_VERSION}`)
       .then(res => {
         if (!res.ok) throw new Error('No encontrado');
         return res.text();
