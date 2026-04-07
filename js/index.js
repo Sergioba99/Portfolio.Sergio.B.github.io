@@ -5,7 +5,6 @@ const PROJECTS = [
     'projects/TransportMe.html',
     'projects/DS3SaveBackup.html'
   ];
-
   
   let currentIndex = 0;
   const viewer  = document.getElementById('pv-viewer');
