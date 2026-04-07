@@ -1,3 +1,5 @@
+const ASSET_VERSION = '20260407';
+
 const PROJECTS = [
     'projects/tfg.html',
     'projects/replital.html',
@@ -29,7 +31,7 @@ const PROJECTS = [
     btns.forEach((b, i) => b.classList.toggle('active', i === index));
     updateArrows();
     viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
-    fetch(PROJECTS[index])
+    fetch(`${PROJECTS[index]}?v=${ASSET_VERSION}`)
       .then(res => {
         if (!res.ok) throw new Error('No encontrado');
         return res.text();
@@ -158,5 +160,5 @@ const PROJECTS = [
       console.error('Error cargando componente', id, err);
     }
   }
-loadComponent('main-nav', '/Portfolio.Sergio.B.github.io/html/navigation.html');
-loadComponent('main-footer', '/Portfolio.Sergio.B.github.io/html/footer.html');
+loadComponent('main-nav', `/Portfolio.Sergio.B.github.io/html/navigation.html?v=${ASSET_VERSION}`);
+loadComponent('main-footer', `/Portfolio.Sergio.B.github.io/html/footer.html?v=${ASSET_VERSION}`);

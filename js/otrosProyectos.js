@@ -5,6 +5,8 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
+  const ASSET_VERSION = '20260407';
+
   const PROJECTS = [
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
     //{ name: 'TransportMe',       sub: 'Java · Spigot',      file: 'projects/TransportMe.html' },
@@ -64,7 +66,7 @@
     currentIndex = index;
     updateControls();
     viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
-    fetch(PROJECTS[index].file)
+    fetch(`${PROJECTS[index].file}?v=${ASSET_VERSION}`)
       .then(res => {
         if (!res.ok) throw new Error('No encontrado');
         return res.text();
@@ -194,5 +196,5 @@
       console.error('Error cargando componente', id, err);
     }
   }
-loadComponent('main-nav', '/Portfolio.Sergio.B.github.io/html/navigation.html');
-loadComponent('main-footer', '/Portfolio.Sergio.B.github.io/html/footer.html');
+loadComponent('main-nav', `/Portfolio.Sergio.B.github.io/html/navigation.html?v=${ASSET_VERSION}`);
+loadComponent('main-footer', `/Portfolio.Sergio.B.github.io/html/footer.html?v=${ASSET_VERSION}`);
