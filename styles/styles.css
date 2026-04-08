@@ -202,10 +202,39 @@ h2 {
 }
 .about-text strong { color: var(--text); font-weight: 500; }
 
+/* ── CONTRIBUTION ── */
+.contribution-section {
+  max-width: 860px;
+}
+.contribution-card {
+  background: linear-gradient(180deg, rgba(55, 65, 81, 0.95), rgba(31, 41, 55, 0.98));
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 24px 28px;
+}
+.contribution-intro {
+  margin-bottom: 14px;
+}
+.contribution-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+}
+.contribution-list li {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+.contribution-list li::marker {
+  color: var(--accent);
+}
+
 /* ── STACK ── */
 .stack-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 .stack-card {
