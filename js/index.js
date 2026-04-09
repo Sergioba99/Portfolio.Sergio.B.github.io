@@ -1,4 +1,5 @@
 const ASSET_VERSION = '20260407';
+const FETCH_CACHE = new Map();
 
 const PROJECTS = [
     'projects/tfg.html',
@@ -31,11 +32,7 @@ const PROJECTS = [
     btns.forEach((b, i) => b.classList.toggle('active', i === index));
     updateArrows();
     viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
-    fetch(`${PROJECTS[index]}?v=${ASSET_VERSION}`)
-      .then(res => {
-        if (!res.ok) throw new Error('No encontrado');
-        return res.text();
-      })
+    fetchTextCached(`${PROJECTS[index]}?v=${ASSET_VERSION}`)
       .then(html => {
         viewer.innerHTML = html;
         viewer.classList.remove('pv-fade');
@@ -146,13 +143,22 @@ const PROJECTS = [
     nav.dataset.initialized = 'true';
   }
 
+  async function fetchTextCached(url) {
+    if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
+    const promise = fetch(url).then(res => {
+      if (!res.ok) throw new Error('No encontrado');
+      return res.text();
+    });
+    FETCH_CACHE.set(url, promise);
+    promise.catch(() => FETCH_CACHE.delete(url));
+    return promise;
+  }
+
   async function loadComponent(id, url) {
     const el = document.getElementById(id);
     if (!el) return;
     try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('No encontrado');
-      el.innerHTML = await res.text();
+      el.innerHTML = await fetchTextCached(url);
       if (id === 'main-nav') initNavigation();
     } catch (err) {
       console.error('Error cargando componente', id, err);

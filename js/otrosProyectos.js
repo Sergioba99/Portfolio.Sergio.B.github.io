@@ -5,8 +5,9 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
-  const ASSET_VERSION = '20260407';
-  const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
+const ASSET_VERSION = '20260407';
+const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
+const FETCH_CACHE = new Map();
 
   const PROJECTS = [
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
@@ -67,11 +68,7 @@
     currentIndex = index;
     updateControls();
     viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
-    fetch(`${PROJECT_BASE}${PROJECTS[index].file}?v=${ASSET_VERSION}`)
-      .then(res => {
-        if (!res.ok) throw new Error('No encontrado');
-        return res.text();
-      })
+    fetchTextCached(`${PROJECT_BASE}${PROJECTS[index].file}?v=${ASSET_VERSION}`)
       .then(html => {
         viewer.innerHTML = html;
         viewer.classList.remove('op-fade');
@@ -183,13 +180,22 @@
     nav.dataset.initialized = 'true';
   }
 
+  async function fetchTextCached(url) {
+    if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
+    const promise = fetch(url).then(res => {
+      if (!res.ok) throw new Error('No encontrado');
+      return res.text();
+    });
+    FETCH_CACHE.set(url, promise);
+    promise.catch(() => FETCH_CACHE.delete(url));
+    return promise;
+  }
+
   async function loadComponent(id, url) {
     const el = document.getElementById(id);
     if (!el) return;
     try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('No encontrado');
-      el.innerHTML = await res.text();
+      el.innerHTML = await fetchTextCached(url);
       if (id === 'main-nav') initNavigation();
     } catch (err) {
       console.error('Error cargando componente', id, err);
