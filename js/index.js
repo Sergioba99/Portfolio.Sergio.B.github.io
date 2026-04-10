@@ -22,16 +22,32 @@ const PROJECTS = [
   const lightboxPrev = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen anterior"]') : null;
   const lightboxNext = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen siguiente"]') : null;
   let lightboxState = { carouselId: null, index: 0 };
+  let nextButtonMode = 'project';
+
+  function handlePrevClick() {
+    navigateProject(-1);
+  }
+
+  function handleNextClick() {
+    if (nextButtonMode === 'more') {
+      goToOtherProjects();
+      return;
+    }
+    navigateProject(1);
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', handlePrevClick);
+  if (nextBtn) nextBtn.addEventListener('click', handleNextClick);
 
   function updateControls() {
     prevBtn.disabled = currentIndex === 0;
     const isLast = currentIndex === PROJECTS.length - 1;
+    nextButtonMode = isLast ? 'more' : 'project';
     nextBtn.disabled = false;
     nextBtn.classList.toggle('pv-more-link', isLast);
     nextBtn.textContent = isLast ? 'Más proyectos' : '›';
     nextBtn.setAttribute('aria-label', isLast ? 'Más proyectos' : 'Proyecto siguiente');
     nextBtn.title = isLast ? 'Más proyectos' : 'Proyecto siguiente';
-    nextBtn.onclick = isLast ? goToOtherProjects : () => navigateProject(1);
   }
 
   function loadProject(index) {
