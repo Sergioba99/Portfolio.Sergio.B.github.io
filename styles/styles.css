@@ -462,11 +462,11 @@ h2 {
 
 @media (min-width: 1200px) {
   .carousel-slide {
-    flex-basis: 33%;
-    min-width: 33%;
+    flex-basis: 50%;
+    min-width: 50%;
   }
   .carousel-slide img {
-    height: 148px;
+    height: 168px;
   }
 }
 
