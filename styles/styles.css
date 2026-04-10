@@ -374,7 +374,6 @@ h2 {
   display: none;
 }
 .carousel-slide {
-  display: none
   flex: 0 0 50%;
   min-width: 50%;
   box-sizing: border-box;
@@ -395,7 +394,7 @@ h2 {
   background: #0b0f19;
 }
 .carousel-slide .slide-caption {
-  display: block;
+  display: none;
   margin-top: 8px;
   padding: 0 2px;
   font-size: 11px;
