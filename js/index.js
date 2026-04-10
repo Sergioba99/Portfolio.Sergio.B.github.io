@@ -8,6 +8,7 @@ const PROJECTS = [
     'projects/TransportMe.html',
     'projects/DS3SaveBackup.html'
   ];
+  const OTHER_PROJECTS_URL = '/Portfolio.Sergio.B.github.io/html/otros-proyectos.html';
   
   let currentIndex = 0;
   const viewer  = document.getElementById('pv-viewer');
@@ -22,15 +23,21 @@ const PROJECTS = [
   const lightboxNext = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen siguiente"]') : null;
   let lightboxState = { carouselId: null, index: 0 };
 
-  function updateArrows() {
+  function updateControls() {
     prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === PROJECTS.length - 1;
+    const isLast = currentIndex === PROJECTS.length - 1;
+    nextBtn.disabled = false;
+    nextBtn.classList.toggle('pv-more-link', isLast);
+    nextBtn.textContent = isLast ? 'Más proyectos' : '›';
+    nextBtn.setAttribute('aria-label', isLast ? 'Más proyectos' : 'Proyecto siguiente');
+    nextBtn.title = isLast ? 'Más proyectos' : 'Proyecto siguiente';
+    nextBtn.onclick = isLast ? goToOtherProjects : () => navigateProject(1);
   }
 
   function loadProject(index) {
     currentIndex = index;
     btns.forEach((b, i) => b.classList.toggle('active', i === index));
-    updateArrows();
+    updateControls();
     closeLightbox();
     viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
     fetchTextCached(`${PROJECTS[index]}?v=${ASSET_VERSION}`)
@@ -55,7 +62,17 @@ const PROJECTS = [
 
   function navigateProject(dir) {
     const next = currentIndex + dir;
-    if (next >= 0 && next < PROJECTS.length) loadProject(next);
+    if (next >= 0 && next < PROJECTS.length) {
+      loadProject(next);
+      return;
+    }
+    if (dir > 0 && currentIndex === PROJECTS.length - 1) {
+      goToOtherProjects();
+    }
+  }
+
+  function goToOtherProjects() {
+    window.location.href = OTHER_PROJECTS_URL;
   }
 
   document.addEventListener('keydown', e => {

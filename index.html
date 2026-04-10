@@ -113,24 +113,21 @@
 <section id="proyectos">
   <div class="sec-label">Trabajos</div>
   <h2>Proyectos</h2>
-<div class="pv-nav" style="justify-content: space-between;">
-  <div style="display:flex;gap:8px;">
-    <button class="pv-btn active" onclick="loadProject(0)">01</button>
-    <button class="pv-btn" onclick="loadProject(1)">02</button>
-    <button class="pv-btn" onclick="loadProject(2)">03</button>
-    <button class="pv-btn" onclick="loadProject(3)">04</button>
-    <button class="pv-btn" onclick="loadProject(4)">05</button>
+  <div class="pv-controls">
+    <button class="pv-arrow" id="pv-prev" onclick="navigateProject(-1)" aria-label="Proyecto anterior">&#8249;</button>
+    <div class="pv-buttons" aria-label="Selector de proyecto">
+      <button class="pv-btn active" onclick="loadProject(0)">01</button>
+      <button class="pv-btn" onclick="loadProject(1)">02</button>
+      <button class="pv-btn" onclick="loadProject(2)">03</button>
+      <button class="pv-btn" onclick="loadProject(3)">04</button>
+      <button class="pv-btn" onclick="loadProject(4)">05</button>
+    </div>
+    <button class="pv-arrow" id="pv-next" onclick="navigateProject(1)" aria-label="Proyecto siguiente">&#8250;</button>
   </div>
-  <a href="/Portfolio.Sergio.B.github.io/html/otros-proyectos.html" class="btn-secondary" style="font-size:13px;padding:7px 18px;">Ver más proyectos →</a>
-</div>
 </section>
 
 <!-- Visor de proyectos -->
 <div class="pv-wrapper">
-  <div class="pv-controls">
-    <button class="pv-arrow" id="pv-prev" onclick="navigateProject(-1)" aria-label="Proyecto anterior">&#8249;</button>
-    <button class="pv-arrow" id="pv-next" onclick="navigateProject(1)" aria-label="Proyecto siguiente">&#8250;</button>
-  </div>
   <div class="pv-viewer" id="pv-viewer">
     <div class="pv-loading">Cargando proyecto...</div>
   </div>
