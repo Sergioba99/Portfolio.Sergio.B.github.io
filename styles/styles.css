@@ -1172,6 +1172,7 @@ footer {
   font-family: var(--font-title);
   font-weight: 600;
   letter-spacing: 1.2px;
+  transition: none;
 }
 .pv-viewer {
   flex: 1;
