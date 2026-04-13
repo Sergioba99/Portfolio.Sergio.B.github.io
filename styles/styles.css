@@ -1027,16 +1027,28 @@ footer {
     font-size: 16px;
   }
   .hero-panel {
-    gap: 12px;
+    gap: 10px;
   }
   .hero-card {
-    padding: 22px;
+    padding: 18px;
   }
   .hero-card-title {
     font-size: 24px;
   }
   .hero-metrics {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .metric-card {
+    padding: 16px;
+  }
+  .metric-card strong {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .metric-card span {
+    font-size: 11px;
+    line-height: 1.5;
   }
   .stack-grid { grid-template-columns: 1fr; }
   .contact-grid {
