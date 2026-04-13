@@ -1150,7 +1150,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
+  transition: none;
   flex-shrink: 0;
   position: relative;
   top: 0;
@@ -1172,7 +1172,6 @@ footer {
   font-family: var(--font-title);
   font-weight: 600;
   letter-spacing: 1.2px;
-  transition: none;
 }
 .pv-viewer {
   flex: 1;
