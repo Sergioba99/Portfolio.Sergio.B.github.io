@@ -1,4 +1,4 @@
-const ASSET_VERSION = '20260407';
+const ASSET_VERSION = '20260413';
 const FETCH_CACHE = new Map();
 
 const PROJECTS = [

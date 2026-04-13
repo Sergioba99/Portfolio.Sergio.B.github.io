@@ -5,7 +5,7 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
-const ASSET_VERSION = '20260407';
+const ASSET_VERSION = '20260413';
 const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
 const FETCH_CACHE = new Map();
 const PROJECT_PREFETCH_RADIUS = 2;
