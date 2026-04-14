@@ -14,6 +14,7 @@ const PROJECT_PREFETCH_RADIUS = 2;
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
     //{ name: 'TransportMe',       sub: 'Java · Spigot',      file: 'projects/TransportMe.html' },
     //{ name: 'Gestor backups DS3', sub: 'Python · Utilidad',  file: 'projects/DS3SaveBackup.html' },
+    {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
     {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
   ];
 

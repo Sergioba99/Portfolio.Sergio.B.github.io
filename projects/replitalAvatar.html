@@ -3,15 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- PLANTILLA DE PROYECTO CON VIDEO
-       Instrucciones:
-       1. Copia este archivo y renómbralo (ej: mi-proyecto-video.html)
-       2. Sube tu vídeo vertical a una subcarpeta, por ejemplo: media/nombre-proyecto/demo.mp4
-       3. Sustituye todos los campos [ESTO] por la información real del proyecto
-       4. Si el proyecto está terminado: quita la clase "wip" del div.project-card
-       5. Si no hay enlace externo: elimina el bloque <a class="repo-link">
-  -->
-  <title>[NOMBRE DEL PROYECTO] — Sergio Berraco</title>
+  <title>RepliTal Avatar — Sergio Berraco</title>
+  <meta name="description" content="Avatar virtual de presentación para RepliTal, el proyecto de síntesis inversa con IA.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -30,60 +23,53 @@
 </nav>
 
 <section id="proyectos">
-  <div class="project-card wip">
-
+  <div class="project-card">
     <div class="card-top">
       <div class="card-tags">
-        <span class="tag">[TECNOLOGÍA PRINCIPAL]</span>
-        <span class="tag">[TECNOLOGÍA SECUNDARIA]</span>
-        <span class="tag-wip">En desarrollo</span>
+        <span class="tag">Avatar IA</span>
+        <span class="tag">Video</span>
+        <span class="tag">RepliTal</span>
       </div>
-      <span class="tag-pub">[PLATAFORMA]</span>
     </div>
 
-    <div class="project-title">[Título corto del proyecto]</div>
-    <div class="project-subtitle">[Subtítulo breve del proyecto]</div>
+    <div class="project-title">RepliTal</div>
+    <div class="project-subtitle">Avatar virtual de presentación para el proyecto RepliTal</div>
 
     <div class="project-media-layout">
       <div class="project-video-wrapper">
         <video controls preload="metadata" playsinline
                onloadeddata="this.parentElement.querySelector('.video-placeholder').classList.add('hidden')"
                onerror="this.parentElement.querySelector('.video-placeholder').classList.remove('hidden')">
-          <source src="../media/[NOMBRE-PROYECTO]/demo.mp4" type="video/mp4">
+          <source src="../media/videos/replital/ReplitalPresentationVideo.mp4" type="video/mp4">
           Tu navegador no soporta la reproducción de vídeo HTML5.
         </video>
-        <div class="video-placeholder">Sube aquí un vídeo vertical del proyecto para verlo dentro de la tarjeta</div>
+        <div class="video-placeholder">Avatar de presentación de RepliTal</div>
       </div>
 
       <div class="project-content-column">
         <div class="block">
           <div class="block-label">Reto</div>
-          <div class="block-text">[Describe el problema que resuelve el proyecto. Qué necesidad existía, qué limitación había, qué era costoso o imposible antes.]</div>
+          <div class="block-text">Presentar RepliTal de forma clara, dinámica y cercana, manteniendo un tono profesional y una explicación breve que encajara con la identidad técnica del proyecto.</div>
         </div>
 
         <div class="block">
           <div class="block-label">Solución</div>
-          <div class="block-text">[Describe cómo lo resolviste. Qué construiste, cómo funciona, qué decisiones técnicas tomaste.]</div>
+          <div class="block-text">Se creó un avatar virtual con un guion corto, pausado y bien separado por frases, pensado para sincronizar la locución con una presencia visual limpia. El vídeo resume qué hace RepliTal, cómo convierte audio en síntesis y por qué la IA ayuda a automatizar la generación de presets para Vital.</div>
         </div>
 
         <div class="block">
           <div class="block-label">Estado actual</div>
-          <div class="block-text">[Qué está hecho, qué está en curso, qué está pendiente.]</div>
+          <div class="block-text">Pieza de presentación finalizada y lista para acompañar la demo de RepliTal en la web o en presentaciones del proyecto.</div>
         </div>
       </div>
     </div>
 
     <div class="badges">
-      <span class="badge main">[Tech principal 1]</span>
-      <span class="badge main">[Tech principal 2]</span>
-      <span class="badge">[Tech secundaria 1]</span>
-      <span class="badge">[Tech secundaria 2]</span>
+      <span class="badge main">Avatar IA</span>
+      <span class="badge main">RepliTal</span>
+      <span class="badge">Presentación</span>
+      <span class="badge">Video</span>
     </div>
-
-    <a class="repo-link" href="[URL]" target="_blank" rel="noopener">
-      <img class="repo-link-icon" src="[URL-FAVICON]" width="14" height="14" alt="[Plataforma]"/>
-      [texto visible del enlace]
-    </a>
   </div>
 </section>
 
