@@ -94,30 +94,6 @@
       display: flex;
       gap: 6px;
     }
-    .op-arrow {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 20px;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
-    .op-arrow:hover:not(:disabled) {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-    .op-arrow:disabled {
-      opacity: 0.2;
-      cursor: default;
-    }
 
     /* Visor */
     .op-viewer {
