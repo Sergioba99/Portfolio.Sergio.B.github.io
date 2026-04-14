@@ -304,12 +304,18 @@ h1 .hl { color: var(--accent); }
 .hero-card-label,
 .sec-label,
 .stack-card-title,
-.block-label,
 .contact-label {
   font-size: 16px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
+
+.block-label{
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
 .hero-card-label {
   color: var(--accent);
   margin-bottom: 14px;
