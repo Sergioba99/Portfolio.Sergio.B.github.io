@@ -86,7 +86,7 @@ nav {
 }
 .nav-logo {
   font-family: var(--font-title);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text);
   text-decoration: none;
@@ -306,7 +306,7 @@ h1 .hl { color: var(--accent); }
 .stack-card-title,
 .block-label,
 .contact-label {
-  font-size: 11px;
+  font-size: 16px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -356,7 +356,7 @@ h1 .hl { color: var(--accent); }
 .metric-card strong {
   display: block;
   font-family: var(--font-title);
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.2;
   letter-spacing: -0.03em;
   color: var(--text);
@@ -365,7 +365,7 @@ h1 .hl { color: var(--accent); }
 .metric-card span {
   display: block;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14x;
   line-height: 1.45;
 }
 
@@ -964,7 +964,7 @@ footer {
 .footer-note { font-size: 12px; color: var(--soft); }
 .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
 .footer-links a {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s, transform 0.2s;
