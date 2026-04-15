@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptTemplateLibrary — Sergio Berraco</title>
+  <meta name="description" content="Gestor de plantillas YAML para LLMs con PySide6, SQLite y sincronización de metadatos. Proyecto en desarrollo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+
+<section id="proyectos">
+  <div class="project-card wip">
+    <div class="card-top">
+      <div class="card-tags">
+        <span class="tag">YAML</span>
+        <span class="tag">PySide6</span>
+        <span class="tag-wip">En desarrollo</span>
+      </div>
+    </div>
+
+    <div class="project-title">PromptTemplateLibrary</div>
+    <div class="project-subtitle">Gestor de plantillas YAML para LLMs con SQLite y sincronización de metadatos</div>
+
+    <div class="block">
+      <div class="block-label">Reto</div>
+      <div class="block-text">Centralizar la creación de prompts y plantillas reutilizables para modelos de lenguaje sin perder orden, trazabilidad ni consistencia entre archivos, metadatos y estructura interna.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Solución</div>
+      <div class="block-text">Se plantea una aplicación de escritorio con PySide6 para editar, generar y previsualizar prompts a partir de plantillas YAML, apoyada por SQLite para indexar metadatos y por sincronización basada en contenido para mantener alineados archivos y base de datos.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Estado actual</div>
+      <div class="block-text">Proyecto en desarrollo. La base de documentación ya está definida y se está avanzando en la primera implementación de la herramienta de escritorio.</div>
+    </div>
+
+    <div class="carousel" id="carousel-prompttemplatelibrary">
+      <div class="carousel-track"></div>
+      <button class="carousel-btn prev" onclick="moveCarousel('carousel-prompttemplatelibrary', -1)">&#8249;</button>
+      <button class="carousel-btn next" onclick="moveCarousel('carousel-prompttemplatelibrary', 1)">&#8250;</button>
+      <div class="carousel-dots" id="dots-carousel-prompttemplatelibrary"></div>
+    </div>
+
+    <div class="badges">
+      <span class="badge main">PySide6</span>
+      <span class="badge main">SQLite</span>
+      <span class="badge">YAML</span>
+      <span class="badge">LLMs</span>
+      <span class="badge">Sincronización</span>
+    </div>
+  </div>
+</section>
+
+<script src="../js/project-carousel.js"></script>
+
+</body>
+</html>

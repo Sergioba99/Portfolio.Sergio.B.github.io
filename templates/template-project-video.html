@@ -37,8 +37,7 @@
     <div class="project-media-layout">
       <div class="project-video-wrapper">
         <video controls preload="metadata" playsinline
-               onloadeddata="this.parentElement.querySelector('.video-placeholder').classList.add('hidden')"
-               onerror="this.parentElement.querySelector('.video-placeholder').classList.remove('hidden')">
+        >
           <source src="../media/[NOMBRE-PROYECTO]/demo.mp4" type="video/mp4">
           Tu navegador no soporta la reproducción de vídeo HTML5.
         </video>
@@ -77,21 +76,7 @@
   </div>
 </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.project-video-wrapper video').forEach(video => {
-    const placeholder = video.parentElement.querySelector('.video-placeholder');
-    const hidePlaceholder = () => placeholder?.classList.add('hidden');
-    const showPlaceholder = () => {
-      if (!video.currentSrc) placeholder?.classList.remove('hidden');
-    };
-
-    video.addEventListener('loadeddata', hidePlaceholder);
-    video.addEventListener('canplay', hidePlaceholder);
-    video.addEventListener('error', showPlaceholder);
-  });
-});
-</script>
+<script src="../js/project-video.js"></script>
 
 </body>
 </html>

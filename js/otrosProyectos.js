@@ -5,7 +5,7 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
-const ASSET_VERSION = '20260413';
+const ASSET_VERSION = '20260415';
 const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
 const FETCH_CACHE = new Map();
 const PROJECT_PREFETCH_RADIUS = 2;
@@ -14,6 +14,7 @@ const PROJECT_PREFETCH_RADIUS = 2;
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
     //{ name: 'TransportMe',       sub: 'Java · Spigot',      file: 'projects/TransportMe.html' },
     //{ name: 'Gestor backups DS3', sub: 'Python · Utilidad',  file: 'projects/DS3SaveBackup.html' },
+    {name: "PromptTemplateLibrary", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
     {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
     {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
   ];
@@ -83,6 +84,7 @@ const PROJECT_PREFETCH_RADIUS = 2;
     fetchTextCached(`${PROJECT_BASE}${PROJECTS[index].file}?v=${ASSET_VERSION}`)
       .then(html => {
         viewer.innerHTML = html;
+        window.ProjectVideo?.init(viewer);
         viewer.classList.remove('op-fade');
         void viewer.offsetWidth;
         viewer.classList.add('op-fade');
