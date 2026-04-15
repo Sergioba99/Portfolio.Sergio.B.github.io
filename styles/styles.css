@@ -73,16 +73,15 @@ nav {
   z-index: 100;
   width: min(var(--content-width-wide), calc(100% - 24px));
   margin: 14px auto 0;
-  background: rgba(8, 16, 29, 0.82);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(158, 177, 211, 0.12);
+  background: rgba(8, 16, 29, 0.94);
+  border: 1px solid rgba(158, 177, 211, 0.10);
   border-radius: 20px;
   padding: 0 22px;
   min-height: 66px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 22px rgba(4, 10, 22, 0.14);
 }
 .nav-logo {
   font-family: var(--font-title);
@@ -1023,9 +1022,9 @@ footer {
     gap: 0;
     padding: 10px 0;
     background: rgba(8, 16, 29, 0.98);
-    border: 1px solid var(--surface-border);
+    border: 1px solid rgba(158, 177, 211, 0.10);
     border-radius: 18px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 10px 22px rgba(4, 10, 22, 0.14);
   }
   .nav-links li {
     list-style: none;
