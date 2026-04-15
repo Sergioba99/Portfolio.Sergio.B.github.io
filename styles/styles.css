@@ -761,18 +761,23 @@ h2 {
 .repo-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--accent);
   text-decoration: none;
-  margin-top: 10px;
+  margin-top: 12px;
   opacity: 0.88;
   transition: opacity 0.2s, transform 0.2s;
   overflow-wrap: anywhere;
 }
 .repo-link:hover { opacity: 1; transform: translateY(-1px); }
 .repo-link svg { flex-shrink: 0; }
+.repo-link img,
 .repo-link-icon {
+  width: 15px;
+  height: 15px;
   vertical-align: middle;
   border-radius: 2px;
 }
