@@ -1164,11 +1164,22 @@ footer {
   align-items: stretch;
   justify-content: flex-start;
 }
+#pv-viewer section,
+.op-viewer section {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
 #pv-viewer > .pv-panel,
 .op-viewer > .pv-panel {
   width: 100%;
   min-width: 0;
   align-self: flex-start;
+}
+#pv-viewer .project-card,
+.op-viewer .project-card {
+  margin-bottom: 0;
 }
 
 /* Wrapper fuera del section para poder usar ancho completo */
