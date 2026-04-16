@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sergioba99.github.io/Portfolio.Sergio.B.github.io/sitemap.xml
