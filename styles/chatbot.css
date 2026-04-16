@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 8px 8px 12px;
+  padding: 6px 6px 6px 10px;
   border-bottom: 1px solid rgba(8, 18, 34, 0.18);
   background: linear-gradient(135deg, #7596df, #6a85c7);
   position: relative;
@@ -141,8 +141,9 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 8px;
-  padding: 8px 8px 4px;
+  padding: 6px 6px 4px;
   background: linear-gradient(180deg, rgba(4, 10, 21, 0.9), rgba(4, 10, 21, 0.98));
   scrollbar-width: thin;
   scrollbar-color: rgba(126, 166, 255, 0.36) rgba(255, 255, 255, 0.04);
@@ -173,13 +174,13 @@
 }
 
 .pf-chat-message {
-  max-width: 88%;
+  max-width: 92%;
   display: grid;
   gap: 5px;
   border-radius: 16px;
   padding: 9px 11px 8px;
-  line-height: 1.4;
-  font-size: 14px;
+  line-height: 1.38;
+  font-size: 15px;
 }
 
 .pf-chat-message-content {
@@ -246,7 +247,7 @@
 
 .pf-chat-status {
   min-height: 0;
-  padding: 0 8px 0;
+  padding: 0 6px 0;
   font-size: 9px;
   color: var(--soft);
 }
@@ -260,7 +261,7 @@
 }
 
 .pf-chat-form {
-  padding: 0 8px;
+  padding: 0 6px;
 }
 
 .pf-chat-compose {
@@ -327,7 +328,7 @@
 }
 
 .pf-chat-disclaimer {
-  padding: 0 8px 0;
+  padding: 0 6px 0;
   color: var(--soft);
   font-size: 9px;
   line-height: 1.25;
