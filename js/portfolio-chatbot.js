@@ -367,14 +367,6 @@
     content.textContent = message.content;
     bubble.appendChild(content);
 
-    if (message.role === 'assistant' || message.role === 'system') {
-      const meta = createEl('span', 'pf-chat-message-meta', message.role === 'system' ? 'Sistema' : 'Asistente');
-      bubble.appendChild(meta);
-    } else {
-      const meta = createEl('span', 'pf-chat-message-meta', 'Tú');
-      bubble.appendChild(meta);
-    }
-
     return bubble;
   }
 
