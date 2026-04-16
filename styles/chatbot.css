@@ -21,6 +21,9 @@
   width: 100%;
   max-height: min(72vh, 640px);
   height: min(620px, calc(100vh - 128px));
+  padding: 0;
+  margin: 0;
+  max-width: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
