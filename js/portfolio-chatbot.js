@@ -31,6 +31,7 @@
   let statusEl;
   let inputEl;
   let sendButton;
+  let resetButton;
   let closeButton;
   let disclaimerEl;
   let blockedTimer = null;
@@ -111,13 +112,20 @@
 
     const header = createEl('header', 'pf-chat-header');
     const title = createEl('h2', 'pf-chat-title', 'Asistente de Sergio');
+    const headerControls = createEl('div', 'pf-chat-header-controls');
 
-    closeButton = createEl('button', 'pf-chat-close', 'Cerrar');
+    resetButton = createEl('button', 'pf-chat-control pf-chat-reset', '⋯');
+    resetButton.type = 'button';
+    resetButton.setAttribute('aria-label', 'Reiniciar historial');
+    resetButton.addEventListener('click', resetHistory);
+
+    closeButton = createEl('button', 'pf-chat-control pf-chat-close', '✕');
     closeButton.type = 'button';
     closeButton.setAttribute('aria-label', 'Cerrar chat');
     closeButton.addEventListener('click', closePanel);
 
-    header.append(title, closeButton);
+    headerControls.append(resetButton, closeButton);
+    header.append(title, headerControls);
 
     messagesEl = createEl('div', 'pf-chat-messages');
     messagesEl.setAttribute('role', 'log');
@@ -213,6 +221,24 @@
     state.open = false;
     persistState();
     render();
+  }
+
+  function resetHistory() {
+    state.messages = [WELCOME_MESSAGE];
+    state.status = '';
+    state.loading = false;
+    state.blockedUntil = 0;
+    if (blockedTimer) {
+      window.clearInterval(blockedTimer);
+      blockedTimer = null;
+    }
+    safeStorageSet(STORAGE_KEY, JSON.stringify(state.messages));
+    safeStorageSet(OPEN_KEY, state.open ? 'true' : 'false');
+    render();
+    autosizeInput();
+    if (inputEl) {
+      inputEl.value = '';
+    }
   }
 
   function togglePanel() {
