@@ -261,10 +261,12 @@
   justify-content: flex-end;
   padding: 0;
   gap: 0;
+  margin: 0;
 }
 
 .pf-chat-form {
   padding: 0;
+  margin: 0;
 }
 
 .pf-chat-compose {
@@ -332,6 +334,7 @@
 
 .pf-chat-disclaimer {
   padding: 4px 0 6px;
+  margin: 0;
   color: var(--soft);
   font-size: 9px;
   line-height: 1.25;
