@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot del portfolio — Sergio Berraco</title>
+  <meta name="description" content="Chatbot integrado en el portfolio mediante Chatbase para ofrecer asistencia contextual en la web.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+
+<div class="pv-panel">
+  <div class="project-card">
+    <div class="card-top">
+      <div class="card-tags">
+        <span class="tag">Chatbase</span>
+        <span class="tag-pub">Integrado</span>
+      </div>
+    </div>
+
+    <div class="project-title">Chatbot del portfolio</div>
+    <div class="project-subtitle">Asistente contextual integrado en la web con Chatbase</div>
+
+    <div class="block">
+      <div class="block-label">Reto</div>
+      <div class="block-text">Añadir una vía de ayuda rápida dentro del portfolio sin construir todavía un backend propio, pero manteniendo una integración limpia y fácil de activar o desactivar.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Solución</div>
+      <div class="block-text">Se integró el widget de Chatbase mediante su snippet de JavaScript, aislándolo en un archivo propio y cargándolo solo en las páginas necesarias para no mezclarlo con la lógica principal del portfolio.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Estado actual</div>
+      <div class="block-text">Proyecto integrado y funcionando en la web. Sirve como demostración de integración de herramientas de terceros y como base para una futura versión propia con backend y modelo local o remoto.
+      </div>
+    </div>
+
+    <div class="project-actions">
+      <button type="button" class="btn-primary project-cta" onclick="window.chatbase?.open?.()">
+        Probar asistente
+      </button>
+    </div>
+
+    <div class="badges">
+      <span class="badge main">Chatbase</span>
+      <span class="badge">Integración web</span>
+      <span class="badge">IA</span>
+    </div>
+  </div>
+</div>
+
+<script src="../js/chatbase.js"></script>
+
+</body>
+</html>

@@ -14,14 +14,17 @@ const PROJECT_PREFETCH_RADIUS = 2;
     // Ejemplo — descomenta y adapta cuando muevas proyectos:
     //{ name: 'TransportMe',       sub: 'Java · Spigot',      file: 'projects/TransportMe.html' },
     //{ name: 'Gestor backups DS3', sub: 'Python · Utilidad',  file: 'projects/DS3SaveBackup.html' },
-    {name: "PromptTemplateLibrary", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
+    {name: "Prompt Template Library", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
     {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
     {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
+    {name: "Chatbot del portfolio", sub: "Chatbase · Integración web", file: "projects/chatbotPortfolio.html"},
   ];
 
   let currentIndex = 0;
   const viewer    = document.getElementById('op-viewer');
   const sideList  = document.getElementById('op-sidebar-list');
+  const sideToggle = document.getElementById('op-sidebar-toggle');
+  const sideBackdrop = document.getElementById('op-sidebar-backdrop');
   const counter   = document.getElementById('op-counter');
   const prevBtn   = document.getElementById('op-prev');
   const nextBtn   = document.getElementById('op-next');
@@ -34,6 +37,24 @@ const PROJECT_PREFETCH_RADIUS = 2;
   const lightboxNext = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen siguiente"]') : null;
   let lightboxState = { carouselId: null, index: 0 };
   let lightboxZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0 };
+
+  function setSidebarOpen(open) {
+    document.body.classList.toggle('op-sidebar-open', open);
+    if (sideToggle) {
+      sideToggle.setAttribute('aria-expanded', String(open));
+    }
+    if (sideBackdrop) {
+      sideBackdrop.hidden = !open;
+    }
+  }
+
+  function toggleSidebar() {
+    setSidebarOpen(!document.body.classList.contains('op-sidebar-open'));
+  }
+
+  function closeSidebar() {
+    setSidebarOpen(false);
+  }
 
   function buildSidebar() {
     sideList.innerHTML = '';
@@ -77,6 +98,7 @@ const PROJECT_PREFETCH_RADIUS = 2;
       nextBtn.disabled = true;
       return;
     }
+    closeSidebar();
     currentIndex = index;
     updateControls();
     closeLightbox();
@@ -132,6 +154,10 @@ const PROJECT_PREFETCH_RADIUS = 2;
   }
 
   document.addEventListener('keydown', e => {
+    if (document.body.classList.contains('op-sidebar-open') && e.key === 'Escape') {
+      closeSidebar();
+      return;
+    }
     if (isLightboxOpen()) {
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
@@ -150,6 +176,18 @@ const PROJECT_PREFETCH_RADIUS = 2;
     }
     if (e.key === 'ArrowLeft')  opNavigate(-1);
     if (e.key === 'ArrowRight') opNavigate(1);
+  });
+
+  if (sideToggle) {
+    sideToggle.addEventListener('click', toggleSidebar);
+  }
+  if (sideBackdrop) {
+    sideBackdrop.addEventListener('click', closeSidebar);
+  }
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) {
+      closeSidebar();
+    }
   });
 
   /* ── CARRUSEL ── */

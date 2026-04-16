@@ -543,6 +543,17 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.project-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 6px;
+  flex-wrap: wrap;
+}
+.project-cta {
+  margin-top: 0;
+}
+
 .block { margin-bottom: 8px; }
 .block-label {
   color: var(--accent);
