@@ -33,8 +33,10 @@
   let sendButton;
   let resetButton;
   let closeButton;
+  let menuEl;
   let disclaimerEl;
   let blockedTimer = null;
+  let menuOpen = false;
 
   function normalizeBaseUrl(value) {
     return String(value || '').trim().replace(/\/$/, '');
@@ -114,10 +116,11 @@
     const title = createEl('h2', 'pf-chat-title', 'Asistente de Sergio');
     const headerControls = createEl('div', 'pf-chat-header-controls');
 
-    resetButton = createEl('button', 'pf-chat-control pf-chat-reset', '⋯');
+    resetButton = createEl('button', 'pf-chat-control pf-chat-reset', '⋮');
     resetButton.type = 'button';
     resetButton.setAttribute('aria-label', 'Reiniciar historial');
-    resetButton.addEventListener('click', resetHistory);
+    resetButton.setAttribute('aria-expanded', 'false');
+    resetButton.addEventListener('click', toggleMenu);
 
     closeButton = createEl('button', 'pf-chat-control pf-chat-close', '✕');
     closeButton.type = 'button';
@@ -126,6 +129,19 @@
 
     headerControls.append(resetButton, closeButton);
     header.append(title, headerControls);
+
+    menuEl = createEl('div', 'pf-chat-menu');
+    menuEl.setAttribute('role', 'menu');
+    menuEl.setAttribute('aria-hidden', 'true');
+    const newChatButton = createEl('button', 'pf-chat-menu-item', 'Nuevo chat');
+    newChatButton.type = 'button';
+    newChatButton.setAttribute('role', 'menuitem');
+    newChatButton.addEventListener('click', () => {
+      resetHistory();
+      closeMenu();
+    });
+    menuEl.appendChild(newChatButton);
+    headerControls.appendChild(menuEl);
 
     messagesEl = createEl('div', 'pf-chat-messages');
     messagesEl.setAttribute('role', 'log');
@@ -187,6 +203,7 @@
 
     document.addEventListener('keydown', handleGlobalKeydown);
     document.addEventListener('click', handleOutsideClick, true);
+    panel.addEventListener('click', handlePanelClick);
 
     render();
     autosizeInput();
@@ -197,6 +214,10 @@
   }
 
   function handleGlobalKeydown(event) {
+    if (event.key === 'Escape' && menuOpen) {
+      closeMenu();
+      return;
+    }
     if (event.key === 'Escape' && state.open) {
       closePanel();
     }
@@ -208,8 +229,15 @@
     closePanel();
   }
 
+  function handlePanelClick(event) {
+    if (!menuOpen) return;
+    if (event.target.closest('.pf-chat-header-controls')) return;
+    closeMenu();
+  }
+
   function openPanel() {
     state.open = true;
+    closeMenu();
     persistState();
     render();
     if (inputEl) {
@@ -219,6 +247,7 @@
 
   function closePanel() {
     state.open = false;
+    closeMenu();
     persistState();
     render();
   }
@@ -238,6 +267,36 @@
     autosizeInput();
     if (inputEl) {
       inputEl.value = '';
+    }
+  }
+
+  function toggleMenu() {
+    if (menuOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+
+  function openMenu() {
+    menuOpen = true;
+    if (menuEl) {
+      menuEl.classList.add('open');
+      menuEl.setAttribute('aria-hidden', 'false');
+    }
+    if (resetButton) {
+      resetButton.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    if (menuEl) {
+      menuEl.classList.remove('open');
+      menuEl.setAttribute('aria-hidden', 'true');
+    }
+    if (resetButton) {
+      resetButton.setAttribute('aria-expanded', 'false');
     }
   }
 
