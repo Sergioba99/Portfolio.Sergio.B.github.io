@@ -2,7 +2,7 @@
   const STORAGE_KEY = 'portfolio-chatbot-state-v1';
   const OPEN_KEY = 'portfolio-chatbot-open-v1';
   const MAX_REQUEST_MESSAGES = 24;
-  const API_BASE_URL = 'https://groq-portfolio-chatbot.sergio-berraco99.workers.dev/api/chat';
+  const API_BASE_URL = 'https://groq-portfolio-chatbot.sergio-berraco99.workers.dev';
 
   const SYSTEM_MESSAGE = {
     role: 'system',
@@ -124,11 +124,15 @@
     messagesEl.setAttribute('aria-live', 'polite');
     messagesEl.setAttribute('aria-relevant', 'additions');
 
+    const footer = createEl('div', 'pf-chat-footer');
+
     statusEl = createEl('div', 'pf-chat-status');
     statusEl.setAttribute('aria-live', 'polite');
 
     const form = createEl('form', 'pf-chat-form');
     form.noValidate = true;
+
+    const compose = createEl('div', 'pf-chat-compose');
 
     inputEl = document.createElement('textarea');
     inputEl.className = 'pf-chat-input';
@@ -151,11 +155,14 @@
       submitFromInput();
     });
 
-    form.append(inputEl, sendButton);
+    compose.append(inputEl, sendButton);
+    form.append(compose);
 
     disclaimerEl = createEl('p', 'pf-chat-disclaimer', 'Las respuestas se basan en documentación disponible y pueden contener errores.');
 
-    panel.append(header, messagesEl, statusEl, form, disclaimerEl);
+    footer.append(statusEl, form, disclaimerEl);
+
+    panel.append(header, messagesEl, footer);
 
     launcher = createEl('button', 'pf-chat-launcher');
     launcher.type = 'button';
