@@ -15,6 +15,9 @@
   };
 
   const apiBaseUrl = normalizeBaseUrl(API_BASE_URL);
+  const markdownRenderer = window.markdownit
+    ? window.markdownit({ html: false, linkify: true, breaks: true, typographer: true })
+    : null;
 
   const state = {
     messages: loadMessages(),
@@ -98,6 +101,60 @@
     if (className) el.className = className;
     if (typeof text === 'string') el.textContent = text;
     return el;
+  }
+
+  function sanitizeMarkdownHtml(html) {
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const allowedTags = new Set(['P', 'BR', 'STRONG', 'EM', 'CODE', 'PRE', 'A', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HR']);
+
+    const walk = (node) => {
+      Array.from(node.children).forEach((child) => {
+        if (!allowedTags.has(child.tagName)) {
+          child.replaceWith(...child.childNodes);
+          walk(node);
+          return;
+        }
+
+        Array.from(child.attributes).forEach((attr) => {
+          const name = attr.name.toLowerCase();
+          if (name.startsWith('on')) {
+            child.removeAttribute(attr.name);
+            return;
+          }
+          if (child.tagName === 'A' && name === 'href') {
+            try {
+              const url = new URL(child.getAttribute('href'), window.location.href);
+              const protocol = url.protocol.toLowerCase();
+              if (!['http:', 'https:', 'mailto:', 'tel:'].includes(protocol)) {
+                child.removeAttribute('href');
+              } else {
+                child.setAttribute('target', '_blank');
+                child.setAttribute('rel', 'noopener noreferrer');
+              }
+            } catch (err) {
+              child.removeAttribute('href');
+            }
+          } else if (name !== 'href' && name !== 'target' && name !== 'rel') {
+            child.removeAttribute(attr.name);
+          }
+        });
+
+        walk(child);
+      });
+    };
+
+    walk(template.content);
+    return template.content;
+  }
+
+  function markdownToFragment(markdown) {
+    const source = String(markdown || '').trim();
+    if (!source) return document.createDocumentFragment();
+    const rendered = markdownRenderer
+      ? markdownRenderer.render(source)
+      : source.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
+    return sanitizeMarkdownHtml(rendered);
   }
 
   function mount() {
@@ -364,7 +421,12 @@
     bubble.dataset.role = message.role;
 
     const content = createEl('div', 'pf-chat-message-content');
-    content.textContent = message.content;
+    if (message.role === 'assistant' || message.role === 'system') {
+      const fragment = markdownToFragment(message.content);
+      content.replaceChildren(fragment);
+    } else {
+      content.textContent = message.content;
+    }
     bubble.appendChild(content);
 
     return bubble;
