@@ -69,12 +69,6 @@ const PROJECT_PREFETCH_RADIUS = 2;
                        <span class="op-sidebar-sub">${p.sub}</span>`;
       btn.onclick = () => opLoad(i);
       sideList.appendChild(btn);
-
-      if (i < PROJECTS.length - 1) {
-        const div = document.createElement('div');
-        div.className = 'op-sidebar-divider';
-        sideList.appendChild(div);
-      }
     });
   }
 
