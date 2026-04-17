@@ -67,11 +67,10 @@
     }
     .op-sidebar-divider {
       height: 1px;
-      background: var(--border);
-      margin: 8px 0;
-      opacity: 0.4;
+      background: rgba(158, 177, 211, 0.18);
+      margin: 7px 0;
+      opacity: 0.85;
     }
-
     /* Área de contenido */
     .op-content {
       padding: 0 0 0 24px;
@@ -198,7 +197,7 @@
         font-size: 11px;
       }
       .op-sidebar-divider {
-        margin: 4px 0;
+        margin: 5px 0;
       }
       .op-sidebar-toggle {
         display: inline-flex;

@@ -70,8 +70,7 @@ const PROJECT_PREFETCH_RADIUS = 2;
       btn.onclick = () => opLoad(i);
       sideList.appendChild(btn);
 
-      // Separador visual cada 3 elementos
-      if (i < PROJECTS.length - 1 && (i + 1) % 3 === 0) {
+      if (i < PROJECTS.length - 1) {
         const div = document.createElement('div');
         div.className = 'op-sidebar-divider';
         sideList.appendChild(div);
