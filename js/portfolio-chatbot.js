@@ -420,7 +420,10 @@
     const bubble = createEl('article', `pf-chat-message pf-chat-message-${message.role}`);
     bubble.dataset.role = message.role;
 
-    const content = createEl('div', 'pf-chat-message-content');
+    const contentClass = (message.role === 'assistant' || message.role === 'system')
+      ? 'pf-chat-message-content pf-chat-message-markdown'
+      : 'pf-chat-message-content pf-chat-message-plain';
+    const content = createEl('div', contentClass);
     if (message.role === 'assistant' || message.role === 'system') {
       const fragment = markdownToFragment(message.content);
       content.replaceChildren(fragment);

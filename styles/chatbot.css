@@ -190,42 +190,66 @@
 }
 
 .pf-chat-message-content {
-  white-space: pre-wrap;
   word-break: break-word;
   font-weight: 500;
+  white-space: normal;
 }
 
-.pf-chat-message-content > *:first-child {
+.pf-chat-message-plain {
+  white-space: pre-wrap;
+}
+
+.pf-chat-message-markdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28em;
+}
+
+.pf-chat-message-markdown > *:first-child {
   margin-top: 0;
 }
 
-.pf-chat-message-content > *:last-child {
+.pf-chat-message-markdown > *:last-child {
   margin-bottom: 0;
 }
 
-.pf-chat-message-content p {
-  margin: 0 0 0.7em;
+.pf-chat-message-markdown p {
+  margin: 0;
 }
 
-.pf-chat-message-content ul,
-.pf-chat-message-content ol {
-  margin: 0.4em 0 0.8em 1.2em;
+.pf-chat-message-markdown ul,
+.pf-chat-message-markdown ol {
+  margin: 0;
+  padding-left: 1.15em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.14em;
+}
+
+.pf-chat-message-markdown li > p {
+  margin: 0;
+}
+
+.pf-chat-message-markdown li > ul,
+.pf-chat-message-markdown li > ol {
+  margin-top: 0.22em;
+  margin-bottom: 0;
   padding: 0;
 }
 
-.pf-chat-message-content li {
-  margin: 0.2em 0;
+.pf-chat-message-markdown li {
+  margin: 0;
 }
 
-.pf-chat-message-content blockquote {
-  margin: 0.5em 0;
+.pf-chat-message-markdown blockquote {
+  margin: 0;
   padding: 0.2em 0 0.2em 0.9em;
   border-left: 2px solid rgba(126, 166, 255, 0.38);
   color: var(--muted);
 }
 
-.pf-chat-message-content pre {
-  margin: 0.7em 0;
+.pf-chat-message-markdown pre {
+  margin: 0;
   padding: 0.9em 1em;
   border-radius: 14px;
   overflow: auto;
@@ -233,7 +257,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.pf-chat-message-content code {
+.pf-chat-message-markdown code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 0.92em;
   background: rgba(126, 166, 255, 0.12);
@@ -242,7 +266,7 @@
   padding: 0.08em 0.35em;
 }
 
-.pf-chat-message-content pre code {
+.pf-chat-message-markdown pre code {
   display: block;
   padding: 0;
   border: 0;
@@ -252,29 +276,29 @@
   word-break: break-word;
 }
 
-.pf-chat-message-content a {
+.pf-chat-message-markdown a {
   color: var(--accent-strong);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.pf-chat-message-content h1,
-.pf-chat-message-content h2,
-.pf-chat-message-content h3,
-.pf-chat-message-content h4,
-.pf-chat-message-content h5,
-.pf-chat-message-content h6 {
-  margin: 0.55em 0 0.35em;
+.pf-chat-message-markdown h1,
+.pf-chat-message-markdown h2,
+.pf-chat-message-markdown h3,
+.pf-chat-message-markdown h4,
+.pf-chat-message-markdown h5,
+.pf-chat-message-markdown h6 {
+  margin: 0;
   line-height: 1.2;
   font-family: var(--font-title);
 }
 
-.pf-chat-message-content h1 { font-size: 1.18em; }
-.pf-chat-message-content h2 { font-size: 1.14em; }
-.pf-chat-message-content h3 { font-size: 1.1em; }
-.pf-chat-message-content h4,
-.pf-chat-message-content h5,
-.pf-chat-message-content h6 { font-size: 1.03em; }
+.pf-chat-message-markdown h1 { font-size: 1.18em; }
+.pf-chat-message-markdown h2 { font-size: 1.14em; }
+.pf-chat-message-markdown h3 { font-size: 1.1em; }
+.pf-chat-message-markdown h4,
+.pf-chat-message-markdown h5,
+.pf-chat-message-markdown h6 { font-size: 1.03em; }
 
 .pf-chat-message-user {
   align-self: flex-end;
