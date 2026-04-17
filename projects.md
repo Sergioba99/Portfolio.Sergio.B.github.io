@@ -127,7 +127,7 @@ Documento de contexto para IA con RAG. Resume los proyectos visibles en el portf
 
 - **Titulo**: Hub de Control Climatico con ESP32, DHT11 y Transmision RF 433 MHz
 - **Estado**: en expansion
-- **Tags**: ESP32, Arduino, RF 433 MHz, DHT11, control climatico
+- **Tags**: ESP32, Arduino, RF 433 MHz, DHT11, control climatico, GitHub publico
 - **Resumen**: Hub de control climatico con ESP32, DHT11 y transmision RF 433 MHz para monitorizar temperatura y humedad y controlar un ventilador desde una interfaz web local.
 - **Reto**: Control y monitorizacion en tiempo real sin infraestructura centralizada ni cableado adicional.
 - **Solucion**: Nodo ESP32 con sensor DHT11 y emisor RF a 433 MHz, mas interfaz web embebida servida desde el microcontrolador.
@@ -137,6 +137,7 @@ Documento de contexto para IA con RAG. Resume los proyectos visibles en el portf
   - Interfaz web local.
   - Base para evolucionar a PID o logica difusa.
 - **Tecnologias destacadas**: ESP32, Arduino, HTML/CSS/JS, RF 433 MHz.
+- **Enlace publico**: GitHub del proyecto.
 
 ### 9. Chatbot del portfolio
 

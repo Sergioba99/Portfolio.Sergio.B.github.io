@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot del portfolio — Sergio Berraco</title>
-  <meta name="description" content="Chatbot integrado en el portfolio mediante Chatbase para ofrecer asistencia contextual en la web.">
+  <meta name="description" content="Chatbot del portfolio evolucionado desde una integración inicial con Chatbase hasta una versión propia con Groq y Cloudflare Workers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,27 +17,27 @@
     <div class="card-top">
       <div class="card-tags">
         <span class="tag">Chatbase</span>
-        <span class="tag-pub">Integrado</span>
+        <span class="tag">Groq</span>
+        <span class="tag-pub">Workers</span>
       </div>
     </div>
 
     <div class="project-title">Chatbot del portfolio</div>
-    <div class="project-subtitle">Asistente contextual integrado en la web con Chatbase</div>
+    <div class="project-subtitle">Asistente contextual del portfolio, primero con Chatbase y ahora con backend propio en Cloudflare Workers y Groq usando llama-3.1-8b-instant</div>
 
     <div class="block">
       <div class="block-label">Reto</div>
-      <div class="block-text">Añadir una vía de ayuda rápida dentro del portfolio sin construir todavía un backend propio, pero manteniendo una integración limpia y fácil de activar o desactivar.</div>
+      <div class="block-text">Añadir una vía de ayuda rápida dentro del portfolio sin construir al principio un backend propio, y después evolucionarla hacia una solución más controlable con inferencia propia.</div>
     </div>
 
     <div class="block">
       <div class="block-label">Solución</div>
-      <div class="block-text">Se integró el widget de Chatbase mediante su snippet de JavaScript, aislándolo en un archivo propio y cargándolo solo en las páginas necesarias para no mezclarlo con la lógica principal del portfolio.</div>
+      <div class="block-text">Primero se integró Chatbase mediante su snippet de JavaScript como demostración de uso de herramientas de terceros. Después se sustituyó por un chatbot propio con frontend en JavaScript, backend en Cloudflare Workers e inferencia con Groq usando el modelo llama-3.1-8b-instant, manteniendo la integración dentro del portfolio.</div>
     </div>
 
     <div class="block">
       <div class="block-label">Estado actual</div>
-      <div class="block-text">Proyecto integrado y funcionando en la web. Sirve como demostración de integración de herramientas de terceros y como base para una futura versión propia con backend y modelo local o remoto.
-      </div>
+      <div class="block-text">Proyecto integrado y funcionando en la web con backend propio. Conserva el valor de haber empezado con una herramienta externa y ahora sirve como demostración de una integración más personalizada y controlable.</div>
     </div>
 
     <div class="project-actions">
@@ -47,14 +47,15 @@
     </div>
 
     <div class="badges">
-      <span class="badge main">Chatbase</span>
+      <span class="badge main">Groq</span>
+      <span class="badge main">llama-3.1-8b-instant</span>
+      <span class="badge main">Cloudflare Workers</span>
+      <span class="badge">JavaScript</span>
+      <span class="badge">Chatbase</span>
       <span class="badge">Integración web</span>
-      <span class="badge">IA</span>
     </div>
   </div>
 </div>
-
-<script src="../js/chatbase.js"></script>
 
 </body>
 </html>
