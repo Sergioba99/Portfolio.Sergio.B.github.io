@@ -1,11 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Portfolio favicon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Portfolio favicon">
   <rect width="64" height="64" rx="16" fill="#081120"/>
-  <path d="M18 20H32V32H46" stroke="#7ea6ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M18 44H26V32H38" stroke="#9bb9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M38 32H46V20" stroke="#49d3a1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="18" cy="20" r="4" fill="#9bb9ff"/>
-  <circle cx="18" cy="44" r="4" fill="#7ea6ff"/>
-  <circle cx="32" cy="32" r="4" fill="#f5f8ff"/>
-  <circle cx="46" cy="20" r="4" fill="#49d3a1"/>
-  <circle cx="46" cy="44" r="4" fill="#f2b84b"/>
+
+  <!-- Pins -->
+  <g stroke="#7e8aa3" stroke-width="4" stroke-linecap="round">
+    <path d="M20 6v12"/>
+    <path d="M32 6v12"/>
+    <path d="M44 6v12"/>
+    <path d="M56 20h-12"/>
+    <path d="M56 32h-12"/>
+    <path d="M56 44h-12"/>
+    <path d="M20 58v-12"/>
+    <path d="M32 58v-12"/>
+    <path d="M44 58v-12"/>
+    <path d="M8 20h12"/>
+    <path d="M8 32h12"/>
+    <path d="M8 44h12"/>
+  </g>
+
+  <!-- Chip body -->
+  <rect x="10" y="10" width="44" height="44" rx="10" fill="#d8e6f2" stroke="#7e8aa3" stroke-width="4"/>
+  <rect x="16" y="16" width="32" height="32" rx="8" fill="#ff9f8f" stroke="#6c7687" stroke-width="3"/>
+
+  <!-- Circuit traces -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+    <path d="M22 22h12v10h12" stroke="#6c7687"/>
+    <path d="M22 34h8v8" stroke="#7ea6ff"/>
+    <path d="M40 30v8h-8v8" stroke="#49d3a1"/>
+    <path d="M26 40h-4v-8" stroke="#f2b84b"/>
+  </g>
+
+  <!-- Nodes -->
+  <g>
+    <circle cx="22" cy="22" r="4" fill="#7ea6ff" stroke="#6c7687" stroke-width="3"/>
+    <circle cx="42" cy="20" r="4" fill="#49d3a1" stroke="#6c7687" stroke-width="3"/>
+    <circle cx="26" cy="40" r="4" fill="#f2b84b" stroke="#6c7687" stroke-width="3"/>
+    <circle cx="38" cy="36" r="4" fill="#9bb9ff" stroke="#6c7687" stroke-width="3"/>
+  </g>
 </svg>
