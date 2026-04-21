@@ -1234,8 +1234,8 @@ footer {
   background: rgba(255,255,255,0.02);
   border: 1px solid var(--surface-border);
   color: var(--muted);
-  width: 38px;
-  min-width: 38px;
+  width: 132px;
+  min-width: 132px;
   height: 38px;
   border-radius: 999px;
   cursor: pointer;
@@ -1259,8 +1259,6 @@ footer {
   cursor: default;
 }
 .pv-arrow.pv-more-link {
-  width: auto;
-  min-width: 0;
   padding: 8px 15px;
   font-size: 12px;
   font-family: var(--font-title);
