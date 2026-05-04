@@ -61,5 +61,5 @@ async function loadComponent(id, url) {
   }
 }
 
-loadComponent('main-nav', `/Portfolio.Sergio.B.github.io/html/navigation.html?v=${ASSET_VERSION}`);
-loadComponent('main-footer', `/Portfolio.Sergio.B.github.io/html/footer.html?v=${ASSET_VERSION}`);
+loadComponent('main-nav', `/html/navigation.html?v=${ASSET_VERSION}`);
+loadComponent('main-footer', `/html/footer.html?v=${ASSET_VERSION}`);
