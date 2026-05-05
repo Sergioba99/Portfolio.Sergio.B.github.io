@@ -25,6 +25,8 @@ const FETCH_CACHE = new Map();
 const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
 const isInSubfolder = window.location.pathname.includes('/html/');
+// Re-definimos PROJECT_BASE para que las funciones antiguas que no tocamos no rompan
+const PROJECT_BASE = window.location.origin + REPO_NAME; 
 
 /**
  * Normaliza las URLs dinámicamente según la ubicación del archivo.
@@ -124,8 +126,7 @@ function highlightActiveLink() {
         }
     });
 }
-// Re-definimos PROJECT_BASE para que las funciones antiguas que no tocamos no rompan
-const PROJECT_BASE = BASE + '/'; 
+
 
 let currentIndex = 0;
 const viewer = document.getElementById('op-viewer');
