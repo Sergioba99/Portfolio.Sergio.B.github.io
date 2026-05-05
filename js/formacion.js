@@ -20,6 +20,7 @@ const COURSES = [
         pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
         externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
     },
+
     
     
 ];
