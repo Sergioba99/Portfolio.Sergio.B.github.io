@@ -60,6 +60,10 @@ async function fetchTextCached(url) {
 /**
  * Carga componentes (Nav/Footer) y corrige sus enlaces internos.
  */
+/**
+ * Carga componentes (Nav/Footer) y corrige sus enlaces internos.
+ * Versión con Interceptor de Anclajes para navegación entre páginas.
+ */
 async function loadComponent(id, url) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -69,10 +73,18 @@ async function loadComponent(id, url) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = rawText;
 
-        // Ajuste de enlaces para GitHub Pages
+        // RESOLUCIÓN INTELIGENTE DE ENLACES
         tempDiv.querySelectorAll('a').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('#')) {
+            if (!href) return;
+
+            // Caso 1: Enlaces de anclaje (ej: #hero)
+            if (href.startsWith('#')) {
+                // Si estamos en una subpágina, forzamos que apunten al index.html
+                link.href = isGitHub ? `${REPO_NAME}/index.html${href}` : `/index.html${href}`;
+            } 
+            // Caso 2: Enlaces relativos que no son anclajes ni externos
+            else if (!href.startsWith('http')) {
                 const cleanHref = href.startsWith('/') ? href.slice(1) : href;
                 link.href = isGitHub ? `${REPO_NAME}/${cleanHref}` : `/${cleanHref}`;
             }
