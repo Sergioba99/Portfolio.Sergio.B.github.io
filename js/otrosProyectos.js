@@ -92,67 +92,6 @@ const counter = document.getElementById('op-counter');
 const prevBtn = document.getElementById('op-prev');
 const nextBtn = document.getElementById('op-next');
 
-/* ── FUNCIONES DE CARGA ── */
-async function fetchTextCached(url) {
-    if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
-    const promise = fetch(url).then(res => {
-        if (!res.ok) throw new Error('No encontrado');
-        return res.text();
-    });
-    FETCH_CACHE.set(url, promise);
-    return promise;
-}
-
-function opLoad(index) {
-    if (PROJECTS.length === 0 || !viewer) return;
-    currentIndex = index;
-    
-    // Actualizar Sidebar e interfaz
-    document.querySelectorAll('.op-sidebar-item').forEach((el, i) => {
-        el.classList.toggle('active', i === currentIndex);
-    });
-    
-    if (counter) counter.textContent = `${currentIndex + 1} / ${PROJECTS.length}`;
-    if (prevBtn) prevBtn.disabled = currentIndex === 0;
-    if (nextBtn) nextBtn.disabled = currentIndex === PROJECTS.length - 1;
-
-    viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
-    
-    // Construcción de la ruta dinámica
-    const projectUrl = `${BASE}/${PROJECTS[index].file}?v=${ASSET_VERSION}`;
-    
-    fetchTextCached(projectUrl)
-        .then(html => {
-            viewer.innerHTML = html;
-            window.ProjectVideo?.init(viewer); 
-            viewer.classList.remove('op-fade');
-            void viewer.offsetWidth; // Force reflow
-            viewer.classList.add('op-fade');
-            viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
-        })
-        .catch(() => {
-            viewer.innerHTML = '<div class="op-loading">Error al cargar proyecto.</div>';
-        });
-}
-
-async function loadComponent(id, url) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Error en fetch');
-        const rawText = await response.text();
-        
-        // Corregir rutas de los enlaces internos para GitHub Pages
-        const processedText = rawText.replace(/href="\/([^"]*)"/g, `href="${BASE}/$1"`);
-        el.innerHTML = processedText;
-        
-        if (id === 'main-nav') initNavigation();
-    } catch (err) {
-        console.error('Error cargando componente', id, err);
-    }
-}
-
 /* AQUÍ COMIENZA TU FUNCIÓN setSidebarOpen(open) ... NO TOCAR HACIA ABAJO */
 
   function setSidebarOpen(open) {
