@@ -74,31 +74,25 @@ async function loadComponent(id, url) {
         tempDiv.innerHTML = rawText;
 
         tempDiv.querySelectorAll('a').forEach(link => {
-            let href = link.getAttribute('href');
+            const href = link.getAttribute('href');
             if (!href) return;
 
-            // 1. Caso Especial: Logo o Enlace a Raíz
-            if (href === '/' || href === '/index.html') {
-                link.href = CLEAN_ROOT; // Usamos la base limpia directamente
-                return;
-            }
-
-            // 2. Caso: Anclajes (#hero, #contacto)
+            // RESOLUCIÓN DE NAVEGACIÓN LIMPIA
             if (href.startsWith('#')) {
-                link.href = `${CLEAN_ROOT}${href}`;
+                // Usamos la constante BASE que ya tienes definida.
+                // Si BASE es 'repo', esto genera 'repo/#hero' en lugar de 'repo/index.html#hero'
+                link.href = `${BASE}/${href}`;
             } 
-            // 3. Caso: Rutas internas (proyectos/archivo.html)
-            else if (!href.startsWith('http') && !href.startsWith('mailto:')) {
-                // Comprobamos si empieza por / para no duplicarla
-                const cleanPath = href.startsWith('/') ? href.slice(1) : href;
-                link.href = `${CLEAN_ROOT}${cleanPath}`;
+            else if (!href.startsWith('http')) {
+                const cleanHref = href.startsWith('/') ? href.slice(1) : href;
+                link.href = `${BASE}/${cleanHref}`;
             }
         });
 
         el.innerHTML = tempDiv.innerHTML;
         if (id === 'main-nav') initNavigation();
     } catch (err) {
-        console.error(`[Error] Fallo en normalización:`, err);
+        console.error(`[Error] loadComponent (${id}):`, err);
     }
 }
 
