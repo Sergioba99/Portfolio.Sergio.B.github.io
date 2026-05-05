@@ -1,100 +1,97 @@
-/* ── CONFIGURACIÓN GLOBAL ── */
+/* ── CONFIGURACIÓN GLOBAL UNIFICADA ── */
 const ASSET_VERSION = '20260415';
 const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
 
+// Tu solución estratégica para la base
+const PROJECT_BASE = (window.location.origin + REPO_NAME).replace(/\/+$/, '');
+
 /**
- * Normaliza rutas para que funcionen en Local y GitHub Pages.
- * Si detecta que estamos en la carpeta /html/, ajusta los enlaces.
+ * Resuelve rutas de forma absoluta para evitar ambigüedad entre carpetas.
  */
-function getNormalizedPath(url) {
-    if (url.startsWith('http') || url.startsWith('#')) return url;
-    const isInSubfolder = window.location.pathname.includes('/html/');
-    const prefix = isInSubfolder ? '../' : '';
-    return `${prefix}${url}?v=${ASSET_VERSION}`;
+function resolveUrl(path) {
+    if (path.startsWith('http') || path.startsWith('#')) return path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `${PROJECT_BASE}/${cleanPath}`;
 }
 
-async function loadComponent(id, url) {
+/**
+ * Carga de componentes con normalización de enlaces integrada.
+ */
+async function loadComponent(id, fileName) {
     const el = document.getElementById(id);
     if (!el) return;
 
     try {
-        const response = await fetch(getNormalizedPath(url));
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-        let html = await response.text();
-
-        // Corrección dinámica de enlaces dentro del componente inyectado
+        // Usamos resolveUrl para encontrar el archivo HTML
+        const response = await fetch(`${resolveUrl(fileName)}?v=${ASSET_VERSION}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const html = await response.text();
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
+
+        // Corrección de enlaces para que siempre apunten a la raíz del proyecto
         tempDiv.querySelectorAll('a').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('#')) {
-                // Si es GitHub, anteponemos el nombre del repo
-                const finalPath = isGitHub ? `${REPO_NAME}/${href}` : href;
-                link.href = window.location.origin + (finalPath.startsWith('/') ? '' : '/') + finalPath;
+            if (href) {
+                // Caso especial: Logo o volver al inicio limpio
+                if (href === '/' || href === 'index.html') {
+                    link.href = PROJECT_BASE + '/';
+                } else {
+                    link.href = resolveUrl(href);
+                }
             }
         });
 
         el.innerHTML = tempDiv.innerHTML;
         if (id === 'main-nav') initNavigation();
+        
     } catch (err) {
-        console.error(`Fallo cargando ${id}:`, err);
+        console.error(`[Fallo Crítico] No se pudo cargar ${id}:`, err);
     }
 }
 
-// Inicialización
+// Inicialización única y limpia
 document.addEventListener('DOMContentLoaded', () => {
     loadComponent('main-nav', 'html/navigation.html');
     loadComponent('main-footer', 'html/footer.html');
+    highlightActiveLink();
 });
 
-/* Aquí pega tu función initNavigation() que ya tienes */
+/* ── LÓGICA DE NAVEGACIÓN ── */
+
+function initNavigation() {
+    const nav = document.getElementById('main-nav');
+    if (!nav || nav.dataset.initialized === 'true') return;
+
+    const toggle = nav.querySelector('.nav-toggle');
+    const links = nav.querySelector('.nav-links');
+    if (!toggle || !links) return;
+
+    toggle.addEventListener('click', () => {
+        const isOpen = nav.classList.toggle('nav-open');
+        toggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Delegación de eventos para cerrar menú y manejar scroll suave
+    links.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+            nav.classList.remove('nav-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    nav.dataset.initialized = 'true';
+}
 
 function highlightActiveLink() {
     const currentPath = window.location.pathname;
-    document.querySelectorAll('.nav-item').forEach(link => {
-        if (link.getAttribute('href').includes(currentPath)) {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
             link.classList.add('active');
         }
     });
-}
-
-function initNavigation() {
-  const nav = document.getElementById('main-nav');
-  if (!nav || nav.dataset.initialized === 'true') return;
-
-  const toggle = nav.querySelector('.nav-toggle');
-  const links = nav.querySelector('.nav-links');
-  if (!toggle || !links) return;
-
-  const closeMenu = () => {
-    nav.classList.remove('nav-open');
-    toggle.setAttribute('aria-expanded', 'false');
-  };
-
-  toggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('nav-open');
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-
-  links.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  document.addEventListener('click', event => {
-    if (!nav.classList.contains('nav-open')) return;
-    if (!nav.contains(event.target)) closeMenu();
-  });
-
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') closeMenu();
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 640) closeMenu();
-  });
-
-  nav.dataset.initialized = 'true';
 }
 
 
