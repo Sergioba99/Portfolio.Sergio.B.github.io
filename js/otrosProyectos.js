@@ -81,7 +81,7 @@ async function loadComponent(id, url) {
             // Caso 1: Enlaces de anclaje (ej: #hero)
             if (href.startsWith('#')) {
                 // Si estamos en una subpágina, forzamos que apunten al index.html
-                link.href = isGitHub ? `${REPO_NAME}/index.html${href}` : `/index.html${href}`;
+                link.href = isGitHub ? `${REPO_NAME}/${href}` : `/${href}`;
             } 
             // Caso 2: Enlaces relativos que no son anclajes ni externos
             else if (!href.startsWith('http')) {
