@@ -73,20 +73,19 @@ async function loadComponent(id, url) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = rawText;
 
-        // RESOLUCIÓN INTELIGENTE DE ENLACES
         tempDiv.querySelectorAll('a').forEach(link => {
             const href = link.getAttribute('href');
             if (!href) return;
 
-            // Caso 1: Enlaces de anclaje (ej: #hero)
+            // RESOLUCIÓN DE NAVEGACIÓN LIMPIA
             if (href.startsWith('#')) {
-                // Si estamos en una subpágina, forzamos que apunten al index.html
-                link.href = isGitHub ? `${REPO_NAME}/${href}` : `/${href}`;
+                // Usamos la constante BASE que ya tienes definida.
+                // Si BASE es 'repo', esto genera 'repo/#hero' en lugar de 'repo/index.html#hero'
+                link.href = `${BASE}/${href}`;
             } 
-            // Caso 2: Enlaces relativos que no son anclajes ni externos
             else if (!href.startsWith('http')) {
                 const cleanHref = href.startsWith('/') ? href.slice(1) : href;
-                link.href = isGitHub ? `${REPO_NAME}/${cleanHref}` : `/${cleanHref}`;
+                link.href = `${BASE}/${cleanHref}`;
             }
         });
 
