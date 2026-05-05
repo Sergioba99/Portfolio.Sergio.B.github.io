@@ -6,64 +6,115 @@
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
 /* ── LÓGICA DE RUTAS PARA OTROS PROYECTOS ── */
+/**
+ * ── ARQUITECTURA FRONTE-END UNIFICADA ──
+ * Resuelve conflictos de rutas y duplicidad de funciones.
+ */
+
+const PROJECTS = [
+    {name: "Prompt Template Library", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
+    {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
+    {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
+    {name: "Chatbot del portfolio", sub: "Chatbase · Integración web", file: "projects/chatbotPortfolio.html"},
+];
+
 const ASSET_VERSION = '20260415';
+const FETCH_CACHE = new Map();
+
+// 1. Detección Automática de Entorno
 const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
+const isInSubfolder = window.location.pathname.includes('/html/');
 
-// Esta función es vital para cargar los .html de la carpeta /projects/
-function getProjectPath(file) {
-    if (isGitHub) return `${REPO_NAME}/${file}`;
-    return `../${file}`; // Desde /html/ subimos un nivel para encontrar /projects/
+/**
+ * Normaliza las URLs dinámicamente según la ubicación del archivo.
+ */
+function getSmartPath(path) {
+    if (path.startsWith('http') || path.startsWith('#')) return path;
+    
+    // Si estamos en /html/ y queremos algo en /projects/, subimos un nivel
+    if (isInSubfolder && path.startsWith('projects/')) {
+        return `../${path}`;
+    }
+    return path;
 }
 
+/**
+ * Fetch con gestión de caché y control de errores.
+ */
+async function fetchTextCached(url) {
+    const finalUrl = getSmartPath(url);
+    if (FETCH_CACHE.has(finalUrl)) return FETCH_CACHE.get(finalUrl);
+    
+    const response = await fetch(`${finalUrl}?v=${ASSET_VERSION}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${finalUrl}`);
+    
+    const text = await response.text();
+    FETCH_CACHE.set(finalUrl, text);
+    return text;
+}
+
+/**
+ * Carga componentes (Nav/Footer) y corrige sus enlaces internos.
+ */
+async function loadComponent(id, url) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    try {
+        const rawText = await fetchTextCached(url);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = rawText;
+
+        // Ajuste de enlaces para GitHub Pages
+        tempDiv.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.startsWith('#')) {
+                const cleanHref = href.startsWith('/') ? href.slice(1) : href;
+                link.href = isGitHub ? `${REPO_NAME}/${cleanHref}` : `/${cleanHref}`;
+            }
+        });
+
+        el.innerHTML = tempDiv.innerHTML;
+        if (id === 'main-nav') initNavigation();
+    } catch (err) {
+        console.error(`[Error] loadComponent (${id}):`, err);
+    }
+}
+
+/**
+ * Carga el proyecto seleccionado en el visor.
+ */
 async function opLoad(index) {
     if (!PROJECTS[index] || !viewer) return;
     currentIndex = index;
     
-    viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
+    viewer.innerHTML = '<div class="op-loading">Cargando contenido...</div>';
     
-    // Usamos el path corregido
-    const finalUrl = getProjectPath(PROJECTS[index].file);
-
     try {
-        const res = await fetch(`${finalUrl}?v=${ASSET_VERSION}`);
-        const html = await res.text();
+        const html = await fetchTextCached(PROJECTS[index].file);
         viewer.innerHTML = html;
         
+        // Reinicializar módulos del proyecto
         if (window.ProjectVideo) window.ProjectVideo.init(viewer);
         viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
+        
         updateControls();
+        viewer.classList.add('op-fade');
     } catch (err) {
-        viewer.innerHTML = '<div class="op-error">Error al cargar el proyecto.</div>';
+        viewer.innerHTML = '<div class="op-error">No se pudo cargar el proyecto.</div>';
     }
 }
 
-// Mantén tu función loadComponent igual a la de index.js arriba para el Nav y Footer
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    buildSidebar();
+    loadComponent('main-nav', 'html/navigation.html');
+    loadComponent('main-footer', 'html/footer.html');
+    setTimeout(() => opLoad(0), 100);
+});
 
-async function loadComponent(id, url) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Error en fetch');
-        let rawText = await response.text();
-        
-        // NORMALIZACIÓN DE RUTAS:
-        // Reemplazamos los href que empiezan con "/" por la ruta base correcta (Local o GitHub)
-        const processedText = rawText.replace(/href="\/([^"]*)"/g, (match, path) => {
-            return `href="${BASE}/${path}"`;
-        });
-        
-        el.innerHTML = processedText;
-        
-        if (id === 'main-nav') {
-            initNavigation();
-            highlightActiveLink();
-        }
-    } catch (err) {
-        console.error('Error cargando componente', id, err);
-    }
-}
+// A partir de aquí, mantén tus funciones de Sidebar y Carrusel (SIN duplicar loadComponent ni opLoad)
 
 function highlightActiveLink() {
     const currentPath = window.location.pathname;
@@ -75,13 +126,6 @@ function highlightActiveLink() {
 }
 // Re-definimos PROJECT_BASE para que las funciones antiguas que no tocamos no rompan
 const PROJECT_BASE = BASE + '/'; 
-
-const PROJECTS = [
-    {name: "Prompt Template Library", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
-    {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
-    {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
-    {name: "Chatbot del portfolio", sub: "Chatbase · Integración web", file: "projects/chatbotPortfolio.html"},
-];
 
 let currentIndex = 0;
 const viewer = document.getElementById('op-viewer');
