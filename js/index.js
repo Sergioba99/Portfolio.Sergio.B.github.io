@@ -19,26 +19,36 @@ async function loadComponent(id, url) {
     if (!el) return;
 
     try {
-        const response = await fetch(getNormalizedPath(url));
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-        let html = await response.text();
-
-        // Corrección dinámica de enlaces dentro del componente inyectado
+        const rawText = await fetchTextCached(url);
         const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
+        tempDiv.innerHTML = rawText;
+
         tempDiv.querySelectorAll('a').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('#')) {
-                // Si es GitHub, anteponemos el nombre del repo
-                const finalPath = isGitHub ? `${REPO_NAME}/${href}` : href;
-                link.href = window.location.origin + (finalPath.startsWith('/') ? '' : '/') + finalPath;
+            let href = link.getAttribute('href');
+            if (!href) return;
+
+            // 1. Caso Especial: Logo o Enlace a Raíz
+            if (href === '/' || href === '/index.html') {
+                link.href = CLEAN_ROOT; // Usamos la base limpia directamente
+                return;
+            }
+
+            // 2. Caso: Anclajes (#hero, #contacto)
+            if (href.startsWith('#')) {
+                link.href = `${CLEAN_ROOT}${href}`;
+            } 
+            // 3. Caso: Rutas internas (proyectos/archivo.html)
+            else if (!href.startsWith('http') && !href.startsWith('mailto:')) {
+                // Comprobamos si empieza por / para no duplicarla
+                const cleanPath = href.startsWith('/') ? href.slice(1) : href;
+                link.href = `${CLEAN_ROOT}${cleanPath}`;
             }
         });
 
         el.innerHTML = tempDiv.innerHTML;
         if (id === 'main-nav') initNavigation();
     } catch (err) {
-        console.error(`Fallo cargando ${id}:`, err);
+        console.error(`[Error] Fallo en normalización:`, err);
     }
 }
 
