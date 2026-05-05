@@ -41,7 +41,7 @@ async function loadComponent(id, url) {
                 link.href = `${BASE}/${cleanHref}`;
             }
             else if(href.startsWith('/')){
-              link.href = `${BASE}${href}`;
+              link.href = `${BASE}`;
             }
         });
 
