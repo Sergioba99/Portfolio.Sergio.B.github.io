@@ -5,21 +5,40 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
-/* ── CONFIGURACIÓN DINÁMICA Y COMPATIBILIDAD ── */
+/* ── LÓGICA DE RUTAS PARA OTROS PROYECTOS ── */
 const ASSET_VERSION = '20260415';
-const FETCH_CACHE = new Map();
-const PROJECT_PREFETCH_RADIUS = 2;
+const isGitHub = window.location.hostname.includes('github.io');
+const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
 
-// js/otrosProyectos.js (y similar en index)
-
-function getBaseHref() {
-    const isGitHub = window.location.hostname.includes('github.io');
-    // Si es GitHub, extraemos el nombre del repositorio de la URL
-    if (isGitHub) return '/' + window.location.pathname.split('/')[1];
-    return '';
+// Esta función es vital para cargar los .html de la carpeta /projects/
+function getProjectPath(file) {
+    if (isGitHub) return `${REPO_NAME}/${file}`;
+    return `../${file}`; // Desde /html/ subimos un nivel para encontrar /projects/
 }
 
-const BASE = getBaseHref();
+async function opLoad(index) {
+    if (!PROJECTS[index] || !viewer) return;
+    currentIndex = index;
+    
+    viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
+    
+    // Usamos el path corregido
+    const finalUrl = getProjectPath(PROJECTS[index].file);
+
+    try {
+        const res = await fetch(`${finalUrl}?v=${ASSET_VERSION}`);
+        const html = await res.text();
+        viewer.innerHTML = html;
+        
+        if (window.ProjectVideo) window.ProjectVideo.init(viewer);
+        viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
+        updateControls();
+    } catch (err) {
+        viewer.innerHTML = '<div class="op-error">Error al cargar el proyecto.</div>';
+    }
+}
+
+// Mantén tu función loadComponent igual a la de index.js arriba para el Nav y Footer
 
 async function loadComponent(id, url) {
     const el = document.getElementById(id);

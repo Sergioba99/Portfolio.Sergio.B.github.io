@@ -1,42 +1,54 @@
+/* ── CONFIGURACIÓN GLOBAL ── */
 const ASSET_VERSION = '20260415';
-const FETCH_CACHE = new Map();
+const isGitHub = window.location.hostname.includes('github.io');
+const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
 
-// Función para obtener la base de la URL dinámicamente
-// js/otrosProyectos.js (y similar en index)
-
-function getBaseHref() {
-    const isGitHub = window.location.hostname.includes('github.io');
-    // Si es GitHub, extraemos el nombre del repositorio de la URL
-    if (isGitHub) return '/' + window.location.pathname.split('/')[1];
-    return '';
+/**
+ * Normaliza rutas para que funcionen en Local y GitHub Pages.
+ * Si detecta que estamos en la carpeta /html/, ajusta los enlaces.
+ */
+function getNormalizedPath(url) {
+    if (url.startsWith('http') || url.startsWith('#')) return url;
+    const isInSubfolder = window.location.pathname.includes('/html/');
+    const prefix = isInSubfolder ? '../' : '';
+    return `${prefix}${url}?v=${ASSET_VERSION}`;
 }
-
-const BASE = getBaseHref();
 
 async function loadComponent(id, url) {
     const el = document.getElementById(id);
     if (!el) return;
+
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Error en fetch');
-        let rawText = await response.text();
-        
-        // NORMALIZACIÓN DE RUTAS:
-        // Reemplazamos los href que empiezan con "/" por la ruta base correcta (Local o GitHub)
-        const processedText = rawText.replace(/href="\/([^"]*)"/g, (match, path) => {
-            return `href="${BASE}/${path}"`;
+        const response = await fetch(getNormalizedPath(url));
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        let html = await response.text();
+
+        // Corrección dinámica de enlaces dentro del componente inyectado
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        tempDiv.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.startsWith('#')) {
+                // Si es GitHub, anteponemos el nombre del repo
+                const finalPath = isGitHub ? `${REPO_NAME}/${href}` : href;
+                link.href = window.location.origin + (finalPath.startsWith('/') ? '' : '/') + finalPath;
+            }
         });
-        
-        el.innerHTML = processedText;
-        
-        if (id === 'main-nav') {
-            initNavigation();
-            highlightActiveLink();
-        }
+
+        el.innerHTML = tempDiv.innerHTML;
+        if (id === 'main-nav') initNavigation();
     } catch (err) {
-        console.error('Error cargando componente', id, err);
+        console.error(`Fallo cargando ${id}:`, err);
     }
 }
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    loadComponent('main-nav', 'html/navigation.html');
+    loadComponent('main-footer', 'html/footer.html');
+});
+
+/* Aquí pega tu función initNavigation() que ya tienes */
 
 function highlightActiveLink() {
     const currentPath = window.location.pathname;
@@ -85,27 +97,6 @@ function initNavigation() {
   nav.dataset.initialized = 'true';
 }
 
-function fetchTextCached(url) {
-  if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
-  const promise = fetch(url).then(res => {
-    if (!res.ok) throw new Error('No encontrado');
-    return res.text();
-  });
-  FETCH_CACHE.set(url, promise);
-  promise.catch(() => FETCH_CACHE.delete(url));
-  return promise;
-}
-
-async function loadComponent(id, url) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  try {
-    el.innerHTML = await fetchTextCached(url);
-    if (id === 'main-nav') initNavigation();
-  } catch (err) {
-    console.error('Error cargando componente', id, err);
-  }
-}
 
 loadComponent('main-nav', `html/navigation.html?v=${ASSET_VERSION}`);
 loadComponent('main-footer', `html/footer.html?v=${ASSET_VERSION}`);
