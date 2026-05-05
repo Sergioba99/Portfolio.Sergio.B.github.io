@@ -87,6 +87,9 @@ async function loadComponent(id, url) {
                 const cleanHref = href.startsWith('/') ? href.slice(1) : href;
                 link.href = `${BASE}/${cleanHref}`;
             }
+            else if(href.startsWith('/')){
+              link.href = `${BASE}${href}`;
+            }
         });
 
         el.innerHTML = tempDiv.innerHTML;

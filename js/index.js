@@ -28,10 +28,20 @@ async function loadComponent(id, url) {
         tempDiv.innerHTML = html;
         tempDiv.querySelectorAll('a').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('#')) {
-                // Si es GitHub, anteponemos el nombre del repo
-                const finalPath = isGitHub ? `${REPO_NAME}/${href}` : href;
-                link.href = window.location.origin + (finalPath.startsWith('/') ? '' : '/') + finalPath;
+            if (!href) return;
+
+            // RESOLUCIÓN DE NAVEGACIÓN LIMPIA
+            if (href.startsWith('#')) {
+                // Usamos la constante BASE que ya tienes definida.
+                // Si BASE es 'repo', esto genera 'repo/#hero' en lugar de 'repo/index.html#hero'
+                link.href = `${BASE}/${href}`;
+            } 
+            else if (!href.startsWith('http')) {
+                const cleanHref = href.startsWith('/') ? href.slice(1) : href;
+                link.href = `${BASE}/${cleanHref}`;
+            }
+            else if(href.startsWith('/')){
+              link.href = `${BASE}${href}`;
             }
         });
 
