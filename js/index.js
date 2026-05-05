@@ -2,36 +2,49 @@ const ASSET_VERSION = '20260415';
 const FETCH_CACHE = new Map();
 
 // Función para obtener la base de la URL dinámicamente
+// js/otrosProyectos.js (y similar en index)
+
 function getBaseHref() {
-    // Si estamos en GitHub Pages, extraerá "/Portfolio.Sergio.B.github.io"
-    // Si estamos en Live Server, devolverá una cadena vacía ""
-    const path = window.location.pathname;
-    const segments = path.split('/');
-    
-    // Si el primer segmento parece ser el nombre de tu repo de GitHub
-    if (window.location.hostname.includes('github.io')) {
-        return '/' + segments[1]; 
-    }
-    return ''; // En local/Live Server no necesitamos prefijo
+    const isGitHub = window.location.hostname.includes('github.io');
+    // Si es GitHub, extraemos el nombre del repositorio de la URL
+    if (isGitHub) return '/' + window.location.pathname.split('/')[1];
+    return '';
 }
 
+const BASE = getBaseHref();
+
 async function loadComponent(id, url) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  try {
-    const rawText = await fetchTextCached(url);
-    const base = getBaseHref();
-    
-    // CORRECCIÓN DINÁMICA: 
-    // Buscamos cualquier href que empiece por "/" y le ponemos la base delante
-    const processedText = rawText.replace(/href="\/([^"]*)"/g, `href="${base}/$1"`);
-    
-    el.innerHTML = processedText;
-    
-    if (id === 'main-nav') initNavigation();
-  } catch (err) {
-    console.error('Error cargando componente', id, err);
-  }
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error en fetch');
+        let rawText = await response.text();
+        
+        // NORMALIZACIÓN DE RUTAS:
+        // Reemplazamos los href que empiezan con "/" por la ruta base correcta (Local o GitHub)
+        const processedText = rawText.replace(/href="\/([^"]*)"/g, (match, path) => {
+            return `href="${BASE}/${path}"`;
+        });
+        
+        el.innerHTML = processedText;
+        
+        if (id === 'main-nav') {
+            initNavigation();
+            highlightActiveLink();
+        }
+    } catch (err) {
+        console.error('Error cargando componente', id, err);
+    }
+}
+
+function highlightActiveLink() {
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.nav-item').forEach(link => {
+        if (link.getAttribute('href').includes(currentPath)) {
+            link.classList.add('active');
+        }
+    });
 }
 
 function initNavigation() {
