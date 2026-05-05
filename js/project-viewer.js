@@ -9,7 +9,7 @@
     'projects/TransportMe.html',
     'projects/DS3SaveBackup.html'
   ];
-  const OTHER_PROJECTS_URL = '/Portfolio.Sergio.B.github.io/html/otros-proyectos.html';
+  const OTHER_PROJECTS_URL = '/html/otros-proyectos.html';
 
   let currentIndex = 0;
   let nextButtonMode = 'project';

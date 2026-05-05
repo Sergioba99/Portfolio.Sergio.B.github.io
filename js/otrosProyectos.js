@@ -5,38 +5,98 @@
        2. Añade aquí su entrada con nombre y archivo
      Formato: { name: 'Nombre corto', sub: 'Tech · Stack', file: 'projects/archivo.html' }
   ──────────────────────────────────────────────────────────────── */
+/* ── CONFIGURACIÓN DINÁMICA Y COMPATIBILIDAD ── */
 const ASSET_VERSION = '20260415';
-const PROJECT_BASE = '/Portfolio.Sergio.B.github.io/';
 const FETCH_CACHE = new Map();
 const PROJECT_PREFETCH_RADIUS = 2;
 
-  const PROJECTS = [
-    // Ejemplo — descomenta y adapta cuando muevas proyectos:
-    //{ name: 'TransportMe',       sub: 'Java · Spigot',      file: 'projects/TransportMe.html' },
-    //{ name: 'Gestor backups DS3', sub: 'Python · Utilidad',  file: 'projects/DS3SaveBackup.html' },
+function getBaseHref() {
+    const isGitHub = window.location.hostname.includes('github.io');
+    if (isGitHub) return '/' + window.location.pathname.split('/')[1];
+    return '';
+}
+const BASE = getBaseHref();
+// Re-definimos PROJECT_BASE para que las funciones antiguas que no tocamos no rompan
+const PROJECT_BASE = BASE + '/'; 
+
+const PROJECTS = [
     {name: "Prompt Template Library", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
     {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
     {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
     {name: "Chatbot del portfolio", sub: "Chatbase · Integración web", file: "projects/chatbotPortfolio.html"},
-  ];
+];
 
-  let currentIndex = 0;
-  const viewer    = document.getElementById('op-viewer');
-  const sideList  = document.getElementById('op-sidebar-list');
-  const sideToggle = document.getElementById('op-sidebar-toggle');
-  const sideBackdrop = document.getElementById('op-sidebar-backdrop');
-  const counter   = document.getElementById('op-counter');
-  const prevBtn   = document.getElementById('op-prev');
-  const nextBtn   = document.getElementById('op-next');
-  const lightbox = document.getElementById('image-lightbox');
-  const lightboxFrame = lightbox ? lightbox.querySelector('.lightbox-frame') : null;
-  const lightboxImage = document.getElementById('lightbox-image');
-  const lightboxCounter = document.getElementById('lightbox-counter');
-  const lightboxCaption = document.getElementById('lightbox-caption');
-  const lightboxPrev = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen anterior"]') : null;
-  const lightboxNext = lightbox ? lightbox.querySelector('.lightbox-nav button[aria-label="Imagen siguiente"]') : null;
-  let lightboxState = { carouselId: null, index: 0 };
-  let lightboxZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0 };
+let currentIndex = 0;
+const viewer = document.getElementById('op-viewer');
+const sideList = document.getElementById('op-sidebar-list');
+const sideToggle = document.getElementById('op-sidebar-toggle');
+const sideBackdrop = document.getElementById('op-sidebar-backdrop');
+const counter = document.getElementById('op-counter');
+const prevBtn = document.getElementById('op-prev');
+const nextBtn = document.getElementById('op-next');
+
+/* ── FUNCIONES DE CARGA ── */
+async function fetchTextCached(url) {
+    if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
+    const promise = fetch(url).then(res => {
+        if (!res.ok) throw new Error('No encontrado');
+        return res.text();
+    });
+    FETCH_CACHE.set(url, promise);
+    return promise;
+}
+
+function opLoad(index) {
+    if (PROJECTS.length === 0 || !viewer) return;
+    currentIndex = index;
+    
+    // Actualizar Sidebar e interfaz
+    document.querySelectorAll('.op-sidebar-item').forEach((el, i) => {
+        el.classList.toggle('active', i === currentIndex);
+    });
+    
+    if (counter) counter.textContent = `${currentIndex + 1} / ${PROJECTS.length}`;
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex === PROJECTS.length - 1;
+
+    viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
+    
+    // Construcción de la ruta dinámica
+    const projectUrl = `${BASE}/${PROJECTS[index].file}?v=${ASSET_VERSION}`;
+    
+    fetchTextCached(projectUrl)
+        .then(html => {
+            viewer.innerHTML = html;
+            window.ProjectVideo?.init(viewer); 
+            viewer.classList.remove('op-fade');
+            void viewer.offsetWidth; // Force reflow
+            viewer.classList.add('op-fade');
+            viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
+        })
+        .catch(() => {
+            viewer.innerHTML = '<div class="op-loading">Error al cargar proyecto.</div>';
+        });
+}
+
+async function loadComponent(id, url) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error en fetch');
+        const rawText = await response.text();
+        
+        // Corregir rutas de los enlaces internos para GitHub Pages
+        const processedText = rawText.replace(/href="\/([^"]*)"/g, `href="${BASE}/$1"`);
+        el.innerHTML = processedText;
+        
+        if (id === 'main-nav') initNavigation();
+    } catch (err) {
+        console.error('Error cargando componente', id, err);
+    }
+}
+
+/* AQUÍ COMIENZA TU FUNCIÓN setSidebarOpen(open) ... NO TOCAR HACIA ABAJO */
 
   function setSidebarOpen(open) {
     document.body.classList.toggle('op-sidebar-open', open);
@@ -81,34 +141,6 @@ const PROJECT_PREFETCH_RADIUS = 2;
     document.querySelectorAll('.op-sidebar-item').forEach((el, i) => {
       el.classList.toggle('active', i === currentIndex);
     });
-  }
-
-  function opLoad(index) {
-    if (PROJECTS.length === 0) {
-      viewer.innerHTML = '<p class="op-empty">Aquí aparecerán los proyectos que muevas desde la página principal.</p>';
-      counter.textContent = '';
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      return;
-    }
-    closeSidebar();
-    currentIndex = index;
-    updateControls();
-    closeLightbox();
-    viewer.innerHTML = '<div class="op-loading">Cargando...</div>';
-    fetchTextCached(`${PROJECT_BASE}${PROJECTS[index].file}?v=${ASSET_VERSION}`)
-      .then(html => {
-        viewer.innerHTML = html;
-        window.ProjectVideo?.init(viewer);
-        viewer.classList.remove('op-fade');
-        void viewer.offsetWidth;
-        viewer.classList.add('op-fade');
-        viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
-        scheduleProjectWindowPrefetch(index);
-      })
-      .catch(() => {
-        viewer.innerHTML = '<div class="op-loading">No se pudo cargar el proyecto.</div>';
-      });
   }
 
   function scheduleProjectWindowPrefetch(centerIndex) {
@@ -388,12 +420,28 @@ const PROJECT_PREFETCH_RADIUS = 2;
   }
 
   // Inicializar
-  buildSidebar();
-  if (lightbox) {
-    lightbox.addEventListener('click', event => {
-      if (event.target.id === 'image-lightbox') closeLightbox();
-    });
-  }
+/* ── INICIALIZACIÓN COMPLETA ── */
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Construir la estructura del índice lateral inmediatamente
+    buildSidebar(); 
+
+    // 2. Determinar rutas de componentes (Nav/Footer)
+    // Si BASE existe (GitHub), usa ruta absoluta. Si no (Local), sube un nivel.
+    const navPath = BASE ? `${BASE}/html/navigation.html` : '../html/navigation.html';
+    const footerPath = BASE ? `${BASE}/html/footer.html` : '../html/footer.html';
+
+    // 3. Cargar Navegación y Footer
+    // Usamos una versión simplificada de carga para asegurar que no bloquee el resto
+    loadComponent('main-nav', `${navPath}?v=${ASSET_VERSION}`);
+    loadComponent('main-footer', `${footerPath}?v=${ASSET_VERSION}`);
+
+    // 4. Cargar el primer proyecto automáticamente al entrar
+    // Lo envolvemos en un pequeño timeout para que el navegador respire
+    setTimeout(() => {
+        console.log("Cargando primer proyecto automáticamente...");
+        opLoad(0);
+    }, 100);
+});
 
   if (lightboxImage && lightboxFrame) {
     lightboxImage.addEventListener('load', applyLightboxTransform);
@@ -438,7 +486,6 @@ const PROJECT_PREFETCH_RADIUS = 2;
     lightboxImage.addEventListener('pointercancel', stopLightboxDrag);
     lightboxImage.addEventListener('pointerleave', stopLightboxDrag);
   }
-  opLoad(0);
 
   /* ── CARGAR COMPONENTES ── */
   function initNavigation() {
@@ -479,26 +526,3 @@ const PROJECT_PREFETCH_RADIUS = 2;
     nav.dataset.initialized = 'true';
   }
 
-  async function fetchTextCached(url) {
-    if (FETCH_CACHE.has(url)) return FETCH_CACHE.get(url);
-    const promise = fetch(url).then(res => {
-      if (!res.ok) throw new Error('No encontrado');
-      return res.text();
-    });
-    FETCH_CACHE.set(url, promise);
-    promise.catch(() => FETCH_CACHE.delete(url));
-    return promise;
-  }
-
-  async function loadComponent(id, url) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    try {
-      el.innerHTML = await fetchTextCached(url);
-      if (id === 'main-nav') initNavigation();
-    } catch (err) {
-      console.error('Error cargando componente', id, err);
-    }
-  }
-loadComponent('main-nav', `/Portfolio.Sergio.B.github.io/html/navigation.html?v=${ASSET_VERSION}`);
-loadComponent('main-footer', `/Portfolio.Sergio.B.github.io/html/footer.html?v=${ASSET_VERSION}`);

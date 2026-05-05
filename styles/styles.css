@@ -1340,3 +1340,142 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* 1. Contenedor principal del carrusel */
+.carousel-container {
+    display: flex;
+    align-items: center; 
+    gap: 1rem;
+    position: relative;
+    width: 100%;
+}
+
+/* 2. Ventana que recorta el exceso de tarjetas */
+.courses-window {
+    flex: 1;
+    overflow: hidden;
+    /* Añadimos padding arriba y abajo para el efecto hover */
+    padding: 15px 0; 
+    margin: -15px 0; /* Compensamos el padding para no desplazar el bloque */
+}
+
+/* 3. El Grid (ahora Flex para el carrusel) */
+.courses-grid {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    
+    /* Espaciado lateral para que la primera y última tarjeta no se peguen a la flecha */
+    padding: 5px 15px; 
+    /* Mejora el comportamiento del scroll con las flechas */
+    scroll-padding: 0 15px; 
+}
+
+.courses-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* 4. La Tarjeta (Consolidada) */
+.course-card {
+    background: linear-gradient(180deg, rgba(16, 28, 48, 0.88), rgba(11, 20, 36, 0.92));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+    
+    /* Flexibilidad adaptativa */
+    flex: 0 0 calc(33.333% - 1.4rem); 
+    min-width: 280px;
+    max-width: 400px;
+    
+    /* Evita que el contenido interno se salga (opcional si no usas sombras externas) */
+    overflow: hidden; 
+}
+
+
+
+/* 6. Imagen y Contenido */
+.course-image {
+    width: 100%;
+    height: 200px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px; /* Un poco más de aire para el diploma */
+    background: transparent;
+}
+
+.course-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.course-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Empuja los botones hacia abajo */
+    gap: 0.5rem;
+}
+
+/* 7. Botones y Flechas */
+.course-actions {
+    display: flex;
+    gap: 12px; 
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.btn-course {
+    flex: 1; 
+    text-align: center;
+    padding: 0.7rem 0.5rem;
+    font-size: 0.85rem;
+    background: #0b1628;
+    color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-course:hover {
+    background: var(--accent);
+    color: #0b1628;
+}
+
+.carousel-arrow {
+    background: #0b1628; /* Color sólido para que resalte */
+    border: 1px solid var(--border);
+    color: #fff;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    z-index: 10;
+    flex-shrink: 0; /* Evita que la flecha se aplaste */
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .course-card { flex: 0 0 calc(50% - 1rem); }
+}
+
+@media (max-width: 640px) {
+    .course-card { flex: 0 0 85%; }
+    .carousel-arrow { display: none; }
+    .courses-grid { padding: 5px 0; }
+}

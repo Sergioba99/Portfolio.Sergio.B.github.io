@@ -1,6 +1,39 @@
 const ASSET_VERSION = '20260415';
 const FETCH_CACHE = new Map();
 
+// Función para obtener la base de la URL dinámicamente
+function getBaseHref() {
+    // Si estamos en GitHub Pages, extraerá "/Portfolio.Sergio.B.github.io"
+    // Si estamos en Live Server, devolverá una cadena vacía ""
+    const path = window.location.pathname;
+    const segments = path.split('/');
+    
+    // Si el primer segmento parece ser el nombre de tu repo de GitHub
+    if (window.location.hostname.includes('github.io')) {
+        return '/' + segments[1]; 
+    }
+    return ''; // En local/Live Server no necesitamos prefijo
+}
+
+async function loadComponent(id, url) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  try {
+    const rawText = await fetchTextCached(url);
+    const base = getBaseHref();
+    
+    // CORRECCIÓN DINÁMICA: 
+    // Buscamos cualquier href que empiece por "/" y le ponemos la base delante
+    const processedText = rawText.replace(/href="\/([^"]*)"/g, `href="${base}/$1"`);
+    
+    el.innerHTML = processedText;
+    
+    if (id === 'main-nav') initNavigation();
+  } catch (err) {
+    console.error('Error cargando componente', id, err);
+  }
+}
+
 function initNavigation() {
   const nav = document.getElementById('main-nav');
   if (!nav || nav.dataset.initialized === 'true') return;
@@ -61,5 +94,5 @@ async function loadComponent(id, url) {
   }
 }
 
-loadComponent('main-nav', `/html/navigation.html?v=${ASSET_VERSION}`);
-loadComponent('main-footer', `/html/footer.html?v=${ASSET_VERSION}`);
+loadComponent('main-nav', `html/navigation.html?v=${ASSET_VERSION}`);
+loadComponent('main-footer', `html/footer.html?v=${ASSET_VERSION}`);
