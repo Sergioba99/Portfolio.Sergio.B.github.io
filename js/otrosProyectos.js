@@ -26,10 +26,8 @@ const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
 console.log(REPO_NAME);
 const isInSubfolder = window.location.pathname.includes('/html/');
-// Re-definimos PROJECT_BASE para que las funciones antiguas que no tocamos no rompan
-const BASE = window.location.origin
-const PROJECT_BASE = window.location.origin + REPO_NAME;
 
+const BASE = window.location.origin + REPO_NAME;
 
 /**
  * Normaliza las URLs dinámicamente según la ubicación del archivo.
@@ -202,7 +200,7 @@ const nextBtn = document.getElementById('op-next');
     const end = Math.min(PROJECTS.length - 1, centerIndex + PROJECT_PREFETCH_RADIUS);
 
     for (let i = start; i <= end; i++) {
-      desiredUrls.add(`${PROJECT_BASE}${PROJECTS[i].file}?v=${ASSET_VERSION}`);
+      desiredUrls.add(`${BASE}${PROJECTS[i].file}?v=${ASSET_VERSION}`);
     }
 
     desiredUrls.forEach(url => {
