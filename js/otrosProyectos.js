@@ -205,17 +205,29 @@ const nextBtn = document.getElementById('op-next');
     }
   }
 
+  const normalizePath = (base, path) => {
+    // Eliminamos la barra final de la base si existe
+    const cleanBase = base.replace(/\/+$/, '');
+    // Eliminamos la barra inicial del path si existe
+    const cleanPath = path.replace(/^\/+/, '');
+    
+    return `${cleanBase}/${cleanPath}`;
+};
+
   function syncProjectWindow(centerIndex) {
     const desiredUrls = new Set();
     const start = Math.max(0, centerIndex - PROJECT_PREFETCH_RADIUS);
     const end = Math.min(PROJECTS.length - 1, centerIndex + PROJECT_PREFETCH_RADIUS);
 
     for (let i = start; i <= end; i++) {
-      desiredUrls.add(`${BASE}${PROJECTS[i].file}?v=${ASSET_VERSION}`);
+        // Aplicamos la normalización y la versión de asset
+        const fullPath = normalizePath(BASE, PROJECTS[i].file);
+        desiredUrls.add(`${fullPath}?v=${ASSET_VERSION}`);
     }
 
+    // Ejecución de la precarga
     desiredUrls.forEach(url => {
-      fetchTextCached(url).catch(() => {});
+        fetchTextCached(url).catch(() => {});
     });
 
     for (const key of FETCH_CACHE.keys()) {
