@@ -1380,7 +1380,7 @@ footer {
 .course-card {
     background: linear-gradient(180deg, rgba(16, 28, 48, 0.88), rgba(11, 20, 36, 0.92));
     border: 1px solid var(--border);
-    border-radius: 15px;
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
