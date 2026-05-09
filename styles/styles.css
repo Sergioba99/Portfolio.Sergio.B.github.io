@@ -1012,7 +1012,7 @@ footer {
 }
 .footer-links a:hover { color: var(--text); transform: translateY(-1px); }
 
-/* ── MOBILE ── */
+/* ── MOBILE (Mobile View Enhancements) ── */
 @media (max-width: 640px) {
   nav {
     width: calc(100% - 16px);

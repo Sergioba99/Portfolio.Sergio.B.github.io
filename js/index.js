@@ -1,4 +1,4 @@
-/* ── CONFIGURACIÓN GLOBAL UNIFICADA ── */
+/* ── CONFIGURACIÓN GLOBAL UNIFICADA (Migrado de otrosProyectos.js) ── */
 const ASSET_VERSION = '20260415';
 const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
@@ -17,14 +17,14 @@ function resolveUrl(path) {
 
 /**
  * Carga de componentes con normalización de enlaces integrada.
- */
-async function loadComponent(id, fileName) {
+*/
+async function loadComponent(id, url) {
     const el = document.getElementById(id);
     if (!el) return;
 
     try {
         // Usamos resolveUrl para encontrar el archivo HTML
-        const response = await fetch(`${resolveUrl(fileName)}?v=${ASSET_VERSION}`);
+        const response = await fetch(`${resolveUrl(url)}?v=${ASSET_VERSION}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const html = await response.text();
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     highlightActiveLink();
 });
 
+
 /* ── LÓGICA DE NAVEGACIÓN ── */
 
 function initNavigation() {
@@ -69,6 +70,7 @@ function initNavigation() {
     const links = nav.querySelector('.nav-links');
     if (!toggle || !links) return;
 
+    // --- Lógica de Toggle (Ahora es la misma que antes, pero ahora está en el contexto correcto) ---
     toggle.addEventListener('click', () => {
         const isOpen = nav.classList.toggle('nav-open');
         toggle.setAttribute('aria-expanded', isOpen);
@@ -94,6 +96,4 @@ function highlightActiveLink() {
     });
 }
 
-
-loadComponent('main-nav', `html/navigation.html?v=${ASSET_VERSION}`);
-loadComponent('main-footer', `html/footer.html?v=${ASSET_VERSION}`);
+// --- End of migrated code ---
