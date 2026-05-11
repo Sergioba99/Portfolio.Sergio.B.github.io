@@ -1370,6 +1370,8 @@ footer {
     padding: 5px 15px; 
     /* Mejora el comportamiento del scroll con las flechas */
     scroll-padding: 0 15px; 
+    scroll-snap-type: x mandatory; /* Fuerza a que la tarjeta se detenga centrada */
+    -webkit-overflow-scrolling: touch; /* Suavidad extra en iPhones antiguos */
 }
 
 .courses-grid::-webkit-scrollbar {
@@ -1391,7 +1393,8 @@ footer {
     max-width: 400px;
     
     /* Evita que el contenido interno se salga (opcional si no usas sombras externas) */
-    overflow: hidden; 
+    overflow: hidden;
+    scroll-snap-align: center; 
 }
 
 /* 6. Imagen y Contenido */
@@ -1505,8 +1508,38 @@ footer {
     .course-card { flex: 0 0 calc(50% - 1rem); }
 }
 
+/* --- Ajustes para Móvil --- */
 @media (max-width: 640px) {
-    .course-card { flex: 0 0 85%; }
-    .carousel-arrow { display: none; }
-    .courses-grid { padding: 5px 0; }
+    /* 1. Forzamos que las flechas no se vean nunca en móvil */
+    .carousel-arrow { 
+        display: none !important; 
+    }
+
+    /* 2. Quitamos el espacio lateral que dejábamos para las flechas */
+    .carousel-container {
+        gap: 0;
+    }
+
+    /* 3. El Indicador Visual (Efecto de desvanecimiento a la derecha) */
+    .courses-window {
+        position: relative;
+        /* Creamos un degradado: el contenido se ve al 100% hasta el 85% del ancho, 
+           y luego se desvanece a transparente para indicar que hay más */
+        -webkit-mask-image: linear-gradient(to right, 
+            black 0%, 
+            black 85%, 
+            transparent 100%
+        );
+        mask-image: linear-gradient(to right, 
+            black 0%, 
+            black 85%, 
+            transparent 100%
+        );
+    }
+
+    /* 4. Aseguramos que la tarjeta se vea "cortada" */
+    .course-card { 
+        flex: 0 0 85%; 
+        min-width: 260px; /* Un poco más pequeña para que el corte sea más evidente */
+    }
 }

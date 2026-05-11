@@ -33,21 +33,22 @@ function updateCarouselNavigation() {
     
     if (!grid || !prevBtn || !nextBtn) return;
 
+    // Si estamos en móvil (menos de 640px), no hacemos nada
+    if (window.innerWidth <= 640) {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        return;
+    }
+
     const card = grid.querySelector('.course-card');
     if (!card) return;
 
-    // Calculamos el ancho de una tarjeta + el gap real
     const style = window.getComputedStyle(grid);
     const gap = parseInt(style.gap) || 32;
     const cardFullWidth = card.offsetWidth + gap;
-
-    // Ancho total ocupado por todos los cursos (menos el último gap)
     const totalContentWidth = (cardFullWidth * COURSES.length) - gap;
-    
-    // Ancho del contenedor padre (la ventana visible)
     const windowWidth = grid.parentElement.offsetWidth;
 
-    // Si el contenido es mayor que la ventana, activamos navegación
     if (totalContentWidth > windowWidth) {
         prevBtn.style.display = 'flex';
         nextBtn.style.display = 'flex';
@@ -55,7 +56,7 @@ function updateCarouselNavigation() {
     } else {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
-        grid.style.justifyContent = 'center'; // Centramos si caben todos
+        grid.style.justifyContent = 'center';
     }
 }
 
