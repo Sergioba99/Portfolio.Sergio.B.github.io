@@ -83,7 +83,7 @@ function renderCourses() {
         if (nextBtn) nextBtn.style.display = 'none';
         
         // Opcional: Centrar las tarjetas si hay pocas
-        grid.style.justifyContent = 'center';
+        //grid.style.justifyContent = 'center';
     }
 }
 
