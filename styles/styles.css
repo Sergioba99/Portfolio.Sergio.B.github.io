@@ -1358,24 +1358,22 @@ footer {
     margin: -15px 0; /* Compensamos el padding para no desplazar el bloque */
 }
 
-/* 3. El Grid (ahora Flex para el carrusel) */
+/* --- Ajustes en el Grid --- */
 .courses-grid {
     display: flex;
     gap: 2rem;
     overflow-x: auto;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    
-    /* Espaciado lateral para que la primera y última tarjeta no se peguen a la flecha */
-    padding: 5px 15px; 
-    /* Mejora el comportamiento del scroll con las flechas */
-    scroll-padding: 0 15px; 
-    scroll-snap-type: x mandatory; /* Fuerza a que la tarjeta se detenga centrada */
-    -webkit-overflow-scrolling: touch; /* Suavidad extra en iPhones antiguos */
+    scrollbar-width: none;
+    padding: 15px 5px;
+    /* Esto permite que si hay pocos elementos, se centren sin bloquear el scroll */
+    margin: 0 auto;
+    justify-content: flex-start; 
+    scroll-snap-type: x mandatory;
 }
 
 .courses-grid::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none;
 }
 
 /* 4. La Tarjeta (Consolidada) */
@@ -1503,9 +1501,8 @@ footer {
     border-color: var(--accent);
 }
 
-/* --- Ajustes para Móvil y Tablets (hasta 1024px) --- */
+/* --- Ajustes para Tablets y Móviles (Hasta 1024px) --- */
 @media (max-width: 1024px) {
-    /* 1. Ocultamos flechas */
     .carousel-arrow { 
         display: none !important; 
     }
@@ -1514,28 +1511,23 @@ footer {
         gap: 0;
     }
 
-    /* 2. Indicador visual de scroll */
     .courses-window {
         position: relative;
-        -webkit-mask-image: linear-gradient(to right, 
-            black 0%, 
-            black 85%, 
-            transparent 100%
-        );
-        mask-image: linear-gradient(to right, 
-            black 0%, 
-            black 85%, 
-            transparent 100%
-        );
+        /* Efecto visual de que hay más contenido */
+        -webkit-mask-image: linear-gradient(to right, black 0%, black 85%, transparent 100%);
+        mask-image: linear-gradient(to right, black 0%, black 85%, transparent 100%);
     }
 
-    /* 3. Ajuste de tamaño de tarjeta para tablets */
     .course-card { 
-        /* En tablet (1024px) mostramos casi 2 tarjetas (45% cada una) 
-           para que se vea claramente que hay scroll */
-        flex: 0 0 45%; 
+        flex: 0 0 45%; /* En tablet se ven 2 y un trozo */
         min-width: 280px;
-        scroll-snap-align: center;
+        scroll-snap-align: start;
+    }
+}
+
+@media (max-width: 640px) {
+    .course-card { 
+        flex: 0 0 85%; /* En móvil se ve 1 y un trozo */
     }
 }
 
