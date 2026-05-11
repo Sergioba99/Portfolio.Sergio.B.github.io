@@ -71,30 +71,108 @@ function updateCarouselNavigation() {
 }
 
 // Función para quitar el difuminado al final del scroll
-function handleScrollEffects() {
+function updateScrollMasks() {
     const grid = document.getElementById('courses-grid');
     const windowEl = grid.parentElement; // .courses-window
     
     if (!grid || !windowEl) return;
 
-    // Detectamos si el usuario llegó al final (con un margen de 15px)
-    const isAtEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 15;
+    // 1. Detectar si hay scroll a la izquierda
+    const hasScrollLeft = grid.scrollLeft > 10;
+    
+    // 2. Detectar si hay scroll a la derecha
+    const hasScrollRight = grid.scrollLeft + grid.clientWidth < grid.scrollWidth - 10;
 
-    if (isAtEnd) {
-        windowEl.style.maskImage = 'none';
+    // Si estamos en PC (>1024px) normalmente no queremos máscara si no hay scroll activo
+    if (window.innerWidth > 1024 && !hasScrollLeft && !hasScrollRight) {
         windowEl.style.webkitMaskImage = 'none';
-    } else {
-        // Volvemos a poner el degradado si no estamos al final (solo en móvil/tablet)
-        if (window.innerWidth <= 1024) {
-            const mask = 'linear-gradient(to right, black 0%, black 85%, transparent 100%)';
-            windowEl.style.maskImage = mask;
-            windowEl.style.webkitMaskImage = mask;
-        }
+        windowEl.style.maskImage = 'none';
+        return;
     }
+
+    // Aplicamos el degradado dinámico mediante variables
+    // Si no hay scroll a la izquierda, el negro empieza en 0% (sin transparencia)
+    // Si hay scroll, el negro empieza más adelante para dejar el borde transparente
+    const leftStop = hasScrollLeft ? 'black 10%' : 'black 0%';
+    const rightStop = hasScrollRight ? 'black 90%' : 'black 100%';
+
+    const mask = `linear-gradient(to right, transparent 0%, ${leftStop}, ${rightStop}, transparent 100%)`;
+    
+    windowEl.style.webkitMaskImage = mask;
+    windowEl.style.maskImage = mask;
 }
 
-// Escuchamos el scroll del grid
-document.getElementById('courses-grid').addEventListener('scroll', handleScrollEffects);
+// Asegúrate de añadir los listeners
+const grid = document.getElementById('courses-grid');
+grid.addEventListener('scroll', updateScrollMasks);
+window.addEventListener('resize', updateScrollMasks);
+
+// Ejecutar una vez al cargar
+updateScrollMasks();
+
+function setupDots() {
+    const grid = document.getElementById('courses-grid');
+    const container = document.querySelector('.carousel-container');
+    // Eliminamos puntos previos si existen (para el resize)
+    const oldDots = document.querySelector('.carousel-dots');
+    if (oldDots) oldDots.remove();
+
+    if (!grid || !container || COURSES.length === 0) return;
+
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
+    
+    // CALCULO DE PÁGINAS REALES:
+    // scrollWidth (total) / offsetWidth (lo que se ve)
+    const totalWidth = grid.scrollWidth;
+    const visibleWidth = grid.offsetWidth;
+    const cardWidth = grid.querySelector('.course-card').offsetWidth + parseInt(window.getComputedStyle(grid).gap);
+    
+    // Determinamos cuántos "saltos" totales se pueden dar
+    const maxScroll = totalWidth - visibleWidth;
+    const numPages = Math.ceil(totalWidth / visibleWidth);
+
+    // Si todo el contenido cabe en la pantalla, no creamos puntos
+    if (totalWidth <= visibleWidth + 10) return;
+
+    for (let i = 0; i < numPages; i++) {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.onclick = () => {
+            // Calculamos el destino: no podemos pasarnos del maxScroll
+            let target = i * visibleWidth;
+            if (target > maxScroll) target = maxScroll;
+            
+            grid.scrollTo({ left: target, behavior: 'smooth' });
+        };
+        dotsContainer.appendChild(dot);
+    }
+
+    container.after(dotsContainer);
+}
+
+function updateActiveDot() {
+    const grid = document.getElementById('courses-grid');
+    const dots = document.querySelectorAll('.dot');
+    if (!grid || dots.length === 0) return;
+
+    const scrollLeft = grid.scrollLeft;
+    const visibleWidth = grid.offsetWidth;
+    
+    // Calculamos el índice basándonos en cuánto porcentaje del total hemos scrolleado
+    let activeIndex = Math.round(scrollLeft / visibleWidth);
+    
+    // Corrección para el último punto en móviles (si estamos al final, activar el último)
+    const isAtEnd = scrollLeft + visibleWidth >= grid.scrollWidth - 20;
+    if (isAtEnd) {
+        activeIndex = dots.length - 1;
+    }
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === activeIndex);
+    });
+}
+
 
 function renderCourses() {
     const grid = document.getElementById('courses-grid');
@@ -144,6 +222,13 @@ function renderCourses() {
             grid.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
         };
     }
+
+    setupDots();
+    grid.addEventListener('scroll', updateActiveDot);
+    window.addEventListener('resize', () => {
+        setupDots();
+        updateCarouselNavigation();
+    });
 }
 
 // Eventos de carga y cambio de tamaño

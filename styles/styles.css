@@ -1353,9 +1353,20 @@ footer {
 .courses-window {
     flex: 1;
     overflow: hidden;
-    /* Añadimos padding arriba y abajo para el efecto hover */
-    padding: 15px 0; 
-    margin: -15px 0; /* Compensamos el padding para no desplazar el bloque */
+    padding: 15px 0;
+    margin: -15px 0;
+    /* Definimos las paradas del degradado como variables */
+    --mask-left: black 0%;
+    --mask-right: black 100%;
+    
+    -webkit-mask-image: linear-gradient(to right, 
+        transparent 0%, var(--mask-left) 10%, 
+        var(--mask-right) 90%, transparent 100%);
+    mask-image: linear-gradient(to right, 
+        transparent 0%, var(--mask-left) 10%, 
+        var(--mask-right) 90%, transparent 100%);
+    
+    transition: mask-image 0.3s ease;
 }
 
 /* --- Ajustes en el Grid --- */
@@ -1501,6 +1512,30 @@ footer {
     border-color: var(--accent);
 }
 
+/* Contenedor de los puntos */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+/* Estilo de cada punto */
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border); /* Color apagado por defecto */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Punto activo */
+.dot.active {
+    background: var(--accent); /* Tu color azul/celeste */
+    transform: scale(1.3);
+}
+
 /* --- Ajustes para Tablets y Móviles (Hasta 1024px) --- */
 @media (max-width: 1024px) {
     .carousel-arrow { 
@@ -1523,18 +1558,12 @@ footer {
         min-width: 280px;
         scroll-snap-align: start;
     }
-}
 
-@media (max-width: 640px) {
-    .course-card { 
-        flex: 0 0 85%; /* En móvil se ve 1 y un trozo */
-    }
-}
-
-/* Ajuste extra para móviles muy pequeños */
-@media (max-width: 640px) {
-    .course-card {
-        flex: 0 0 85%;
+    .carousel-dots {
+        display: flex; /* Se activa en móviles y tablets */
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
     }
 }
 
@@ -1571,5 +1600,12 @@ footer {
     .course-card { 
         flex: 0 0 85%; 
         min-width: 260px; /* Un poco más pequeña para que el corte sea más evidente */
+    }
+
+    .carousel-dots {
+        display: flex; /* Se activa en móviles y tablets */
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
     }
 }
