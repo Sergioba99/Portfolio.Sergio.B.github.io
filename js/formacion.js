@@ -19,29 +19,7 @@ const COURSES = [
         image: "media/images/anthropic/introduccionClaudeCowork.png",
         pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
         externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
-    },
-        {
-        title: "Make Intermediate",
-        platform: "Make Academy",
-        image: "media/images/make/make-intermediate.png",
-        pdf: "media/pdf/certificates/MakeCertificate.pdf",
-        externo: "https://www.credly.com/badges/bc188295-795e-40bb-808c-9388b8138b32/public_url"
-    },
-    {
-        title: "Claude Code in Action",
-        platform: "Anthropic Academy",
-        image: "media/images/anthropic/claudeCodeInAction.svg",
-        pdf: "media/pdf/certificates/claudeCodeCertificate.pdf",
-        externo: "https://verify.skilljar.com/c/egfgpou5awsn"
-    },
-    {
-        title: "Introduction to Claude Cowork",
-        platform: "Anthropic Academy",
-        image: "media/images/anthropic/introduccionClaudeCowork.png",
-        pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
-        externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
-    },
-    
+    },   
     
 ];
 

@@ -1403,7 +1403,7 @@ footer {
     
     /* Evita que el contenido interno se salga (opcional si no usas sombras externas) */
     overflow: hidden;
-    scroll-snap-align: flex-start; 
+    scroll-snap-align: center; 
 }
 
 /* 6. Imagen y Contenido */
