@@ -33,8 +33,8 @@ function updateCarouselNavigation() {
     
     if (!grid || !prevBtn || !nextBtn) return;
 
-    // Si estamos en móvil (menos de 640px), no hacemos nada
-    if (window.innerWidth <= 640) {
+    // ACTUALIZADO: Ahora el límite es 1024px
+    if (window.innerWidth <= 1024) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
         return;
@@ -49,6 +49,7 @@ function updateCarouselNavigation() {
     const totalContentWidth = (cardFullWidth * COURSES.length) - gap;
     const windowWidth = grid.parentElement.offsetWidth;
 
+    // Lógica de desborde para escritorio (> 1024px)
     if (totalContentWidth > windowWidth) {
         prevBtn.style.display = 'flex';
         nextBtn.style.display = 'flex';

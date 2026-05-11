@@ -1503,9 +1503,47 @@ footer {
     border-color: var(--accent);
 }
 
-/* Responsive */
+/* --- Ajustes para Móvil y Tablets (hasta 1024px) --- */
 @media (max-width: 1024px) {
-    .course-card { flex: 0 0 calc(50% - 1rem); }
+    /* 1. Ocultamos flechas */
+    .carousel-arrow { 
+        display: none !important; 
+    }
+
+    .carousel-container {
+        gap: 0;
+    }
+
+    /* 2. Indicador visual de scroll */
+    .courses-window {
+        position: relative;
+        -webkit-mask-image: linear-gradient(to right, 
+            black 0%, 
+            black 85%, 
+            transparent 100%
+        );
+        mask-image: linear-gradient(to right, 
+            black 0%, 
+            black 85%, 
+            transparent 100%
+        );
+    }
+
+    /* 3. Ajuste de tamaño de tarjeta para tablets */
+    .course-card { 
+        /* En tablet (1024px) mostramos casi 2 tarjetas (45% cada una) 
+           para que se vea claramente que hay scroll */
+        flex: 0 0 45%; 
+        min-width: 280px;
+        scroll-snap-align: center;
+    }
+}
+
+/* Ajuste extra para móviles muy pequeños */
+@media (max-width: 640px) {
+    .course-card {
+        flex: 0 0 85%;
+    }
 }
 
 /* --- Ajustes para Móvil --- */
