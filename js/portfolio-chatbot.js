@@ -289,7 +289,7 @@
     const welcomeBubbleText = createEl('button', 'pf-chat-welcome-body');
     welcomeBubbleText.type = 'button';
     welcomeBubbleText.setAttribute('aria-label', 'Abrir el chatbot');
-    welcomeBubbleText.innerHTML = '<strong>Soy el asistente de Sergio</strong><span>Pregunta por su perfil, proyectos o stack.</span>';
+    welcomeBubbleText.innerHTML = '<strong>Soy el asistente de Sergio</strong><span>Puedes preguntarme por su perfil, proyectos o stack.</span>';
     welcomeBubbleText.addEventListener('click', openPanel);
 
     welcomeBubbleClose = createEl('button', 'pf-chat-welcome-close', '✕');
