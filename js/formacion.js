@@ -19,7 +19,9 @@ const COURSES = [
         image: "media/images/anthropic/introduccionClaudeCowork.png",
         pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
         externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
-    }
+    },
+    
+    
 ];
 
 /**
@@ -33,7 +35,7 @@ function updateCarouselNavigation() {
     
     if (!grid || !prevBtn || !nextBtn) return;
 
-    // ACTUALIZADO: Ahora el límite es 1024px
+    // 1. Si es móvil o tablet (<= 1024), ocultamos flechas siempre
     if (window.innerWidth <= 1024) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
@@ -43,23 +45,56 @@ function updateCarouselNavigation() {
     const card = grid.querySelector('.course-card');
     if (!card) return;
 
+    // 2. Medición precisa
     const style = window.getComputedStyle(grid);
     const gap = parseInt(style.gap) || 32;
-    const cardFullWidth = card.offsetWidth + gap;
-    const totalContentWidth = (cardFullWidth * COURSES.length) - gap;
-    const windowWidth = grid.parentElement.offsetWidth;
+    const cardWidth = card.offsetWidth;
+    
+    // Ancho total que ocuparían todas las tarjetas juntas
+    const totalContentWidth = (cardWidth * COURSES.length) + (gap * (COURSES.length - 1));
+    
+    // Ancho del contenedor donde viven las tarjetas
+    const containerWidth = grid.parentElement.offsetWidth;
 
-    // Lógica de desborde para escritorio (> 1024px)
-    if (totalContentWidth > windowWidth) {
+    // 3. Lógica de activación (añadimos un margen de error de 10px)
+    // Si el contenido mide casi lo mismo o más que el contenedor, ponemos flechas
+    if (totalContentWidth > (containerWidth - 10)) {
         prevBtn.style.display = 'flex';
         nextBtn.style.display = 'flex';
         grid.style.justifyContent = 'flex-start';
     } else {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
+        // Si caben de sobra, los centramos para que no quede hueco a la derecha
         grid.style.justifyContent = 'flex-start';
     }
 }
+
+// Función para quitar el difuminado al final del scroll
+function handleScrollEffects() {
+    const grid = document.getElementById('courses-grid');
+    const windowEl = grid.parentElement; // .courses-window
+    
+    if (!grid || !windowEl) return;
+
+    // Detectamos si el usuario llegó al final (con un margen de 15px)
+    const isAtEnd = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 15;
+
+    if (isAtEnd) {
+        windowEl.style.maskImage = 'none';
+        windowEl.style.webkitMaskImage = 'none';
+    } else {
+        // Volvemos a poner el degradado si no estamos al final (solo en móvil/tablet)
+        if (window.innerWidth <= 1024) {
+            const mask = 'linear-gradient(to right, black 0%, black 85%, transparent 100%)';
+            windowEl.style.maskImage = mask;
+            windowEl.style.webkitMaskImage = mask;
+        }
+    }
+}
+
+// Escuchamos el scroll del grid
+document.getElementById('courses-grid').addEventListener('scroll', handleScrollEffects);
 
 function renderCourses() {
     const grid = document.getElementById('courses-grid');
