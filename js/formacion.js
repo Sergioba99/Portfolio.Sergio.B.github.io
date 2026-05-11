@@ -31,42 +31,33 @@ function updateCarouselNavigation() {
     const grid = document.getElementById('courses-grid');
     const prevBtn = document.getElementById('course-prev');
     const nextBtn = document.getElementById('course-next');
-    
+
     if (!grid || !prevBtn || !nextBtn) return;
 
-    // 1. Si es móvil o tablet (<= 1024), ocultamos flechas siempre
+    // En móvil/tablet pequeña no queremos flechas nunca
     if (window.innerWidth <= 1024) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
         return;
     }
 
-    const card = grid.querySelector('.course-card');
-    if (!card) return;
+    const maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
+    const scrollLeft = Math.ceil(grid.scrollLeft);
 
-    // 2. Medición precisa
-    const style = window.getComputedStyle(grid);
-    const gap = parseInt(style.gap) || 32;
-    const cardWidth = card.offsetWidth;
-    
-    // Ancho total que ocuparían todas las tarjetas juntas
-    const totalContentWidth = (cardWidth * COURSES.length) + (gap * (COURSES.length - 1));
-    
-    // Ancho del contenedor donde viven las tarjetas
-    const containerWidth = grid.parentElement.offsetWidth;
+    const tolerance = 4;
 
-    // 3. Lógica de activación (añadimos un margen de error de 10px)
-    // Si el contenido mide casi lo mismo o más que el contenedor, ponemos flechas
-    if (totalContentWidth > (containerWidth - 10)) {
-        prevBtn.style.display = 'flex';
-        nextBtn.style.display = 'flex';
-        grid.style.justifyContent = 'flex-start';
-    } else {
+    const hasOverflow = maxScroll > tolerance;
+
+    if (!hasOverflow) {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
-        // Si caben de sobra, los centramos para que no quede hueco a la derecha
-        grid.style.justifyContent = 'flex-start';
+        return;
     }
+
+    prevBtn.style.display = scrollLeft > tolerance ? 'flex' : 'none';
+
+    nextBtn.style.display =
+        scrollLeft < (maxScroll - tolerance) ? 'flex' : 'none';
 }
 
 function setupDots() {
@@ -75,39 +66,28 @@ function setupDots() {
     const oldDots = document.querySelector('.carousel-dots');
     if (oldDots) oldDots.remove();
 
-    if (!grid || !container) return;
+    if (!grid || !container || window.innerWidth > 1024) return;
 
     const cards = grid.querySelectorAll('.course-card');
     if (cards.length === 0) return;
 
-    // Calculamos cuánto mide una tarjeta más su espacio (gap)
-    const style = window.getComputedStyle(grid);
-    const gap = parseInt(style.gap) || 32;
-    const scrollStep = cards[0].offsetWidth + gap;
-
-    // Calculamos cuántos puntos necesitamos de verdad
-    // Es el total de scroll disponible dividido por el ancho de una tarjeta
-    const totalScrollAvailable = grid.scrollWidth - grid.offsetWidth;
-    
-    // Si no hay nada que scrollear, no ponemos puntos
-    if (totalScrollAvailable <= 10) return;
-
-    const numDots = Math.ceil(totalScrollAvailable / scrollStep) + 1;
-
     const dotsContainer = document.createElement('div');
     dotsContainer.className = 'carousel-dots';
     
-    for (let i = 0; i < numDots; i++) {
+    // Creamos exactamente un punto por cada tarjeta
+    cards.forEach((_, i) => {
         const dot = document.createElement('div');
         dot.className = `dot ${i === 0 ? 'active' : ''}`;
         dot.onclick = () => {
-            grid.scrollTo({ 
-                left: i * scrollStep, 
-                behavior: 'smooth' 
+            // Centramos la tarjeta correspondiente
+            cards[i].scrollIntoView({ 
+                behavior: 'smooth', 
+                inline: 'center', 
+                block: 'nearest' 
             });
         };
         dotsContainer.appendChild(dot);
-    }
+    });
 
     container.after(dotsContainer);
 }
@@ -115,20 +95,25 @@ function setupDots() {
 function updateActiveDot() {
     const grid = document.getElementById('courses-grid');
     const dots = document.querySelectorAll('.dot');
-    if (!grid || dots.length === 0) return;
-
     const cards = grid.querySelectorAll('.course-card');
-    const gap = parseInt(window.getComputedStyle(grid).gap) || 32;
-    const scrollStep = cards[0].offsetWidth + gap;
+    if (!grid || dots.length === 0 || cards.length === 0) return;
 
-    // Calculamos qué índice de tarjeta está más cerca del borde izquierdo
-    let activeIndex = Math.round(grid.scrollLeft / scrollStep);
+    // Buscamos qué tarjeta está más cerca del centro visual del contenedor
+    const containerCenter = grid.scrollLeft + (grid.offsetWidth / 2);
     
-    // Forzar el último punto si hemos llegado al final físico del scroll
-    const isAtEnd = grid.scrollLeft + grid.offsetWidth >= grid.scrollWidth - 20;
-    if (isAtEnd) {
-        activeIndex = dots.length - 1;
-    }
+    let activeIndex = 0;
+    let minDistance = Infinity;
+
+    cards.forEach((card, index) => {
+        // Calculamos el centro de la tarjeta respecto al inicio del grid
+        const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+        const distance = Math.abs(containerCenter - cardCenter);
+        
+        if (distance < minDistance) {
+            minDistance = distance;
+            activeIndex = index;
+        }
+    });
 
     dots.forEach((dot, index) => {
         dot.classList.toggle('active', index === activeIndex);
@@ -154,6 +139,12 @@ function updateScrollMasks() {
         windowEl.style.maskImage = 'none';
         return;
     }
+
+    if (!hasScrollLeft && !hasScrollRight) {
+    windowEl.style.webkitMaskImage = 'none';
+    windowEl.style.maskImage = 'none';
+    return;
+}
 
     // Aplicamos el degradado dinámico mediante variables
     // Si no hay scroll a la izquierda, el negro empieza en 0% (sin transparencia)
