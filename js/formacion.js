@@ -20,6 +20,27 @@ const COURSES = [
         pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
         externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
     },
+        {
+        title: "Make Intermediate",
+        platform: "Make Academy",
+        image: "media/images/make/make-intermediate.png",
+        pdf: "media/pdf/certificates/MakeCertificate.pdf",
+        externo: "https://www.credly.com/badges/bc188295-795e-40bb-808c-9388b8138b32/public_url"
+    },
+    {
+        title: "Claude Code in Action",
+        platform: "Anthropic Academy",
+        image: "media/images/anthropic/claudeCodeInAction.svg",
+        pdf: "media/pdf/certificates/claudeCodeCertificate.pdf",
+        externo: "https://verify.skilljar.com/c/egfgpou5awsn"
+    },
+    {
+        title: "Introduction to Claude Cowork",
+        platform: "Anthropic Academy",
+        image: "media/images/anthropic/introduccionClaudeCowork.png",
+        pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
+        externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
+    },
     
     
 ];
@@ -70,6 +91,72 @@ function updateCarouselNavigation() {
     }
 }
 
+function setupDots() {
+    const grid = document.getElementById('courses-grid');
+    const container = document.querySelector('.carousel-container');
+    const oldDots = document.querySelector('.carousel-dots');
+    if (oldDots) oldDots.remove();
+
+    if (!grid || !container) return;
+
+    const cards = grid.querySelectorAll('.course-card');
+    if (cards.length === 0) return;
+
+    // Calculamos cuánto mide una tarjeta más su espacio (gap)
+    const style = window.getComputedStyle(grid);
+    const gap = parseInt(style.gap) || 32;
+    const scrollStep = cards[0].offsetWidth + gap;
+
+    // Calculamos cuántos puntos necesitamos de verdad
+    // Es el total de scroll disponible dividido por el ancho de una tarjeta
+    const totalScrollAvailable = grid.scrollWidth - grid.offsetWidth;
+    
+    // Si no hay nada que scrollear, no ponemos puntos
+    if (totalScrollAvailable <= 10) return;
+
+    const numDots = Math.ceil(totalScrollAvailable / scrollStep) + 1;
+
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'carousel-dots';
+    
+    for (let i = 0; i < numDots; i++) {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.onclick = () => {
+            grid.scrollTo({ 
+                left: i * scrollStep, 
+                behavior: 'smooth' 
+            });
+        };
+        dotsContainer.appendChild(dot);
+    }
+
+    container.after(dotsContainer);
+}
+
+function updateActiveDot() {
+    const grid = document.getElementById('courses-grid');
+    const dots = document.querySelectorAll('.dot');
+    if (!grid || dots.length === 0) return;
+
+    const cards = grid.querySelectorAll('.course-card');
+    const gap = parseInt(window.getComputedStyle(grid).gap) || 32;
+    const scrollStep = cards[0].offsetWidth + gap;
+
+    // Calculamos qué índice de tarjeta está más cerca del borde izquierdo
+    let activeIndex = Math.round(grid.scrollLeft / scrollStep);
+    
+    // Forzar el último punto si hemos llegado al final físico del scroll
+    const isAtEnd = grid.scrollLeft + grid.offsetWidth >= grid.scrollWidth - 20;
+    if (isAtEnd) {
+        activeIndex = dots.length - 1;
+    }
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === activeIndex);
+    });
+}
+
 // Función para quitar el difuminado al final del scroll
 function updateScrollMasks() {
     const grid = document.getElementById('courses-grid');
@@ -106,73 +193,6 @@ function updateScrollMasks() {
 const grid = document.getElementById('courses-grid');
 grid.addEventListener('scroll', updateScrollMasks);
 window.addEventListener('resize', updateScrollMasks);
-
-// Ejecutar una vez al cargar
-updateScrollMasks();
-
-function setupDots() {
-    const grid = document.getElementById('courses-grid');
-    const container = document.querySelector('.carousel-container');
-    // Eliminamos puntos previos si existen (para el resize)
-    const oldDots = document.querySelector('.carousel-dots');
-    if (oldDots) oldDots.remove();
-
-    if (!grid || !container || COURSES.length === 0) return;
-
-    const dotsContainer = document.createElement('div');
-    dotsContainer.className = 'carousel-dots';
-    
-    // CALCULO DE PÁGINAS REALES:
-    // scrollWidth (total) / offsetWidth (lo que se ve)
-    const totalWidth = grid.scrollWidth;
-    const visibleWidth = grid.offsetWidth;
-    const cardWidth = grid.querySelector('.course-card').offsetWidth + parseInt(window.getComputedStyle(grid).gap);
-    
-    // Determinamos cuántos "saltos" totales se pueden dar
-    const maxScroll = totalWidth - visibleWidth;
-    const numPages = Math.ceil(totalWidth / visibleWidth);
-
-    // Si todo el contenido cabe en la pantalla, no creamos puntos
-    if (totalWidth <= visibleWidth + 10) return;
-
-    for (let i = 0; i < numPages; i++) {
-        const dot = document.createElement('div');
-        dot.className = `dot ${i === 0 ? 'active' : ''}`;
-        dot.onclick = () => {
-            // Calculamos el destino: no podemos pasarnos del maxScroll
-            let target = i * visibleWidth;
-            if (target > maxScroll) target = maxScroll;
-            
-            grid.scrollTo({ left: target, behavior: 'smooth' });
-        };
-        dotsContainer.appendChild(dot);
-    }
-
-    container.after(dotsContainer);
-}
-
-function updateActiveDot() {
-    const grid = document.getElementById('courses-grid');
-    const dots = document.querySelectorAll('.dot');
-    if (!grid || dots.length === 0) return;
-
-    const scrollLeft = grid.scrollLeft;
-    const visibleWidth = grid.offsetWidth;
-    
-    // Calculamos el índice basándonos en cuánto porcentaje del total hemos scrolleado
-    let activeIndex = Math.round(scrollLeft / visibleWidth);
-    
-    // Corrección para el último punto en móviles (si estamos al final, activar el último)
-    const isAtEnd = scrollLeft + visibleWidth >= grid.scrollWidth - 20;
-    if (isAtEnd) {
-        activeIndex = dots.length - 1;
-    }
-
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === activeIndex);
-    });
-}
-
 
 function renderCourses() {
     const grid = document.getElementById('courses-grid');
@@ -234,3 +254,5 @@ function renderCourses() {
 // Eventos de carga y cambio de tamaño
 document.addEventListener('DOMContentLoaded', renderCourses);
 window.addEventListener('resize', updateCarouselNavigation);
+// Ejecutar una vez al cargar
+updateScrollMasks();

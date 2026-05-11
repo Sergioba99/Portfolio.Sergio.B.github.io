@@ -1372,7 +1372,7 @@ footer {
 /* --- Ajustes en el Grid --- */
 .courses-grid {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -1397,13 +1397,13 @@ footer {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
     
     /* Flexibilidad adaptativa */
-    flex: 0 0 calc(33.333% - 1.4rem); 
-    min-width: 280px;
-    max-width: 400px;
+    flex: 0 0 calc(33.333% - 1.5rem); 
+    min-width: 240px;
+    max-width: 350px;
     
     /* Evita que el contenido interno se salga (opcional si no usas sombras externas) */
     overflow: hidden;
-    scroll-snap-align: center; 
+    scroll-snap-align: flex-start; 
 }
 
 /* 6. Imagen y Contenido */
