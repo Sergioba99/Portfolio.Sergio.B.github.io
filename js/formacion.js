@@ -19,15 +19,48 @@ const COURSES = [
         image: "media/images/anthropic/introduccionClaudeCowork.png",
         pdf: "media/pdf/certificates/introductionClaudeCowork.pdf",
         externo: "https://verify.skilljar.com/c/mfjrs68xtq48"
-    },
-
-    
-    
+    }
 ];
+
+/**
+ * Comprueba si el ancho total de las tarjetas desborda el contenedor visible
+ * y activa o desactiva las flechas de navegación.
+ */
+function updateCarouselNavigation() {
+    const grid = document.getElementById('courses-grid');
+    const prevBtn = document.getElementById('course-prev');
+    const nextBtn = document.getElementById('course-next');
+    
+    if (!grid || !prevBtn || !nextBtn) return;
+
+    const card = grid.querySelector('.course-card');
+    if (!card) return;
+
+    // Calculamos el ancho de una tarjeta + el gap real
+    const style = window.getComputedStyle(grid);
+    const gap = parseInt(style.gap) || 32;
+    const cardFullWidth = card.offsetWidth + gap;
+
+    // Ancho total ocupado por todos los cursos (menos el último gap)
+    const totalContentWidth = (cardFullWidth * COURSES.length) - gap;
+    
+    // Ancho del contenedor padre (la ventana visible)
+    const windowWidth = grid.parentElement.offsetWidth;
+
+    // Si el contenido es mayor que la ventana, activamos navegación
+    if (totalContentWidth > windowWidth) {
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        grid.style.justifyContent = 'flex-start';
+    } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        grid.style.justifyContent = 'center'; // Centramos si caben todos
+    }
+}
 
 function renderCourses() {
     const grid = document.getElementById('courses-grid');
-    // Seleccionamos los botones directamente por su ID
     const prevBtn = document.getElementById('course-prev');
     const nextBtn = document.getElementById('course-next');
     
@@ -52,40 +85,30 @@ function renderCourses() {
         `;
     }).join('');
 
-    // 2. Lógica de visibilidad y movimiento (Límite: 4 cursos)
-    if (COURSES.length >= 4) {
-        // Mostramos las flechas si existen
-        if (prevBtn) prevBtn.style.display = 'flex';
-        if (nextBtn) nextBtn.style.display = 'flex';
+    // 2. Ejecutar lógica de navegación inicial
+    // Usamos un pequeño timeout para asegurar que el DOM ha calculado los anchos correctamente
+    setTimeout(updateCarouselNavigation, 10);
 
-        // Función para calcular el desplazamiento dinámico
-        const getScrollAmount = () => {
-            const card = grid.querySelector('.course-card');
-            const style = window.getComputedStyle(grid);
-            const gap = parseInt(style.gap) || 32; // Lee el gap real del CSS o usa 32px por defecto
-            return card.offsetWidth + gap;
+    // 3. Configurar eventos de clic
+    const getScrollAmount = () => {
+        const card = grid.querySelector('.course-card');
+        const gap = parseInt(window.getComputedStyle(grid).gap) || 32;
+        return card.offsetWidth + gap;
+    };
+
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            grid.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
         };
+    }
 
-        if (nextBtn) {
-            nextBtn.onclick = () => {
-                grid.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-            };
-        }
-
-        if (prevBtn) {
-            prevBtn.onclick = () => {
-                grid.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
-            };
-        }
-    } else {
-        // Si hay menos de 4, ocultamos las flechas por completo
-        if (prevBtn) prevBtn.style.display = 'none';
-        if (nextBtn) nextBtn.style.display = 'none';
-        
-        // Opcional: Centrar las tarjetas si hay pocas
-        //grid.style.justifyContent = 'center';
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            grid.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        };
     }
 }
 
-// Asegúrate de llamar a la función cuando cargue el DOM
+// Eventos de carga y cambio de tamaño
 document.addEventListener('DOMContentLoaded', renderCourses);
+window.addEventListener('resize', updateCarouselNavigation);
