@@ -57,7 +57,7 @@ function updateCarouselNavigation() {
     } else {
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
-        grid.style.justifyContent = 'center';
+        grid.style.justifyContent = 'flex-start';
     }
 }
 
