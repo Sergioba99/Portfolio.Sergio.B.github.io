@@ -10,7 +10,7 @@ const PROJECT_BASE = (window.location.origin + REPO_NAME).replace(/\/+$/, '');
  * Resuelve rutas de forma absoluta para evitar ambigüedad entre carpetas.
  */
 function resolveUrl(path) {
-    if (path.startsWith('http') || path.startsWith('#')) return path;
+    if (/^(https?:|mailto:|tel:|sms:|whatsapp:|ftp:|data:)/i.test(path) || path.startsWith('#')) return path;
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
     return `${PROJECT_BASE}/${cleanPath}`;
 }
@@ -46,6 +46,7 @@ async function loadComponent(id, url) {
 
         el.innerHTML = tempDiv.innerHTML;
         if (id === 'main-nav') initNavigation();
+        if (id === 'main-nav') highlightActiveLink();
         
     } catch (err) {
         console.error(`[Fallo Crítico] No se pudo cargar ${id}:`, err);
@@ -56,7 +57,6 @@ async function loadComponent(id, url) {
 document.addEventListener('DOMContentLoaded', () => {
     loadComponent('main-nav', 'html/navigation.html');
     loadComponent('main-footer', 'html/footer.html');
-    highlightActiveLink();
 });
 
 
@@ -89,11 +89,24 @@ function initNavigation() {
 
 function highlightActiveLink() {
     const currentPath = window.location.pathname;
+    const currentHash = window.location.hash || '#hero';
     document.querySelectorAll('.nav-links a').forEach(link => {
-        if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
-            link.classList.add('active');
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        link.classList.remove('active');
+
+        if (href.startsWith('#')) {
+            if (href === currentHash) link.classList.add('active');
+            return;
         }
+
+        const url = new URL(resolveUrl(href), window.location.origin);
+        const isSamePath = url.pathname.replace(/\/+$/, '') === currentPath.replace(/\/+$/, '');
+        if (isSamePath) link.classList.add('active');
     });
 }
+
+window.addEventListener('hashchange', highlightActiveLink);
 
 // --- End of migrated code ---

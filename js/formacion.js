@@ -123,9 +123,9 @@ function updateActiveDot() {
 // Función para quitar el difuminado al final del scroll
 function updateScrollMasks() {
     const grid = document.getElementById('courses-grid');
+    if (!grid) return;
     const windowEl = grid.parentElement; // .courses-window
-    
-    if (!grid || !windowEl) return;
+    if (!windowEl) return;
 
     // 1. Detectar si hay scroll a la izquierda
     const hasScrollLeft = grid.scrollLeft > 10;
@@ -160,7 +160,10 @@ function updateScrollMasks() {
 
 // Asegúrate de añadir los listeners
 const grid = document.getElementById('courses-grid');
-grid.addEventListener('scroll', updateScrollMasks);
+if (grid) {
+    grid.addEventListener('scroll', updateScrollMasks);
+    grid.addEventListener('scroll', updateActiveDot);
+}
 window.addEventListener('resize', updateScrollMasks);
 
 function renderCourses() {
@@ -172,8 +175,8 @@ function renderCourses() {
 
     // 1. Renderizar tarjetas
     grid.innerHTML = COURSES.map(course => {
-        const pdfBtn = course.pdf ? `<a href="${course.pdf}" target="_blank" class="btn-course">Ver PDF</a>` : '';
-        const externoBtn = course.externo ? `<a href="${course.externo}" target="_blank" class="btn-course">Ver Credencial</a>` : '';
+        const pdfBtn = course.pdf ? `<a href="${course.pdf}" target="_blank" rel="noopener noreferrer" class="btn-course">Ver PDF</a>` : '';
+        const externoBtn = course.externo ? `<a href="${course.externo}" target="_blank" rel="noopener noreferrer" class="btn-course">Ver Credencial</a>` : '';
 
         return `
             <article class="course-card">
@@ -213,7 +216,6 @@ function renderCourses() {
     }
 
     setupDots();
-    grid.addEventListener('scroll', updateActiveDot);
     window.addEventListener('resize', () => {
         setupDots();
         updateCarouselNavigation();
