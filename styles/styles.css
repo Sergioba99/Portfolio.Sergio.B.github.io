@@ -452,35 +452,46 @@ h2 {
   padding: 0 0 0 28px;
 }
 .contribution-intro {
-  margin-bottom: 6px;
+  margin-bottom: 22px;
 }
-.contribution-list {
-  margin: 0;
-  padding-left: 0;
-  color: var(--text);
-  list-style: none;
+.contribution-grid {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  counter-reset: contribution;
 }
-.contribution-list li {
+.contribution-item {
   position: relative;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.8;
-  margin-bottom: 0;
-  padding-left: 26px;
+  min-height: 190px;
+  padding: 54px 0 0;
+  border-top: 1px solid rgba(158, 177, 211, 0.18);
+  counter-increment: contribution;
 }
-.contribution-list li::before {
-  content: '';
+.contribution-item::before {
+  content: counter(contribution, decimal-leading-zero);
   position: absolute;
-  left: 2px;
-  top: 0.78em;
-  width: 9px;
-  height: 9px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  background: rgba(126, 166, 255, 0.12);
-  box-shadow: 0 0 0 5px rgba(126, 166, 255, 0.05);
+  top: 16px;
+  left: 0;
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+.contribution-kicker {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+.contribution-item p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+  max-width: 32ch;
 }
 
 /* ── STACK ── */
@@ -1392,6 +1403,17 @@ footer {
   .prose-card,
   .contribution-card {
     padding-left: 20px;
+  }
+  .contribution-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .contribution-item {
+    min-height: 0;
+    padding-top: 46px;
+  }
+  .contribution-item p {
+    max-width: none;
   }
   .project-card {
     padding: 24px 20px;
