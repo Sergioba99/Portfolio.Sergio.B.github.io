@@ -20,6 +20,7 @@ const PROJECTS = [
 
 const ASSET_VERSION = '20260415';
 const FETCH_CACHE = new Map();
+let loadToken = 0;
 
 // 1. Detección Automática de Entorno
 const isGitHub = window.location.hostname.includes('github.io');
@@ -32,7 +33,7 @@ const BASE = window.location.origin + REPO_NAME;
  * Normaliza las URLs dinámicamente según la ubicación del archivo.
  */
 function getSmartPath(path) {
-    if (path.startsWith('http') || path.startsWith('#')) return path;
+    if (/^(https?:|mailto:|tel:|sms:|whatsapp:|ftp:|data:)/i.test(path) || path.startsWith('#')) return path;
     
     // Si estamos en /html/ y queremos algo en /projects/, subimos un nivel
     if (isInSubfolder && path.startsWith('projects/')) {
@@ -82,17 +83,17 @@ async function loadComponent(id, url) {
                 // Si BASE es 'repo', esto genera 'repo/#hero' en lugar de 'repo/index.html#hero'
                 link.href = `${BASE}/${href}`;
             } 
-            else if (!href.startsWith('http')) {
+            else if (!/^(https?:|mailto:|tel:|sms:|whatsapp:|ftp:|data:)/i.test(href)) {
                 const cleanHref = href.startsWith('/') ? href.slice(1) : href;
                 link.href = `${BASE}/${cleanHref}`;
-            }
-            else if(href.startsWith('/')){
-              link.href = `${BASE}${href}`;
             }
         });
 
         el.innerHTML = tempDiv.innerHTML;
-        if (id === 'main-nav') initNavigation();
+        if (id === 'main-nav') {
+            initNavigation();
+            highlightActiveNavLinks();
+        }
     } catch (err) {
         console.error(`[Error] loadComponent (${id}):`, err);
     }
@@ -103,32 +104,44 @@ async function loadComponent(id, url) {
  */
 async function opLoad(index) {
     if (!PROJECTS[index] || !viewer) return;
+    if (index === currentIndex && !viewer.querySelector('.op-loading')) return;
+
+    const token = ++loadToken;
     currentIndex = index;
     
     viewer.innerHTML = '<div class="op-loading">Cargando contenido...</div>';
     
     try {
         const html = await fetchTextCached(PROJECTS[index].file);
+        if (token !== loadToken) return;
         viewer.innerHTML = html;
         
-        // Reinicializar módulos del proyecto
-        if (window.ProjectVideo) window.ProjectVideo.init(viewer);
-        viewer.querySelectorAll('.carousel').forEach(c => initCarousel(c.id));
+        window.ProjectVideo?.init(viewer);
+        window.ProjectCarousel?.init(viewer);
         
         updateControls();
         viewer.classList.add('op-fade');
     } catch (err) {
+        if (token !== loadToken) return;
         viewer.innerHTML = '<div class="op-error">No se pudo cargar el proyecto.</div>';
     }
 }
 
 // A partir de aquí, mantén tus funciones de Sidebar y Carrusel (SIN duplicar loadComponent ni opLoad)
 
-function highlightActiveLink() {
+function highlightActiveNavLinks() {
     const currentPath = window.location.pathname;
-    document.querySelectorAll('.nav-item').forEach(link => {
-        if (link.getAttribute('href').includes(currentPath)) {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        link.classList.remove('active');
+        link.removeAttribute('aria-current');
+
+        const url = new URL(href, window.location.origin);
+        if (url.pathname.replace(/\/+$/, '') === currentPath.replace(/\/+$/, '')) {
             link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
         }
     });
 }
@@ -172,6 +185,7 @@ const nextBtn = document.getElementById('op-next');
     PROJECTS.forEach((p, i) => {
       const btn = document.createElement('button');
       btn.className = 'op-sidebar-item' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-pressed', String(i === 0));
       btn.innerHTML = `<span class="op-sidebar-name">${p.name}</span>
                        <span class="op-sidebar-sub">${p.sub}</span>`;
       btn.onclick = () => opLoad(i);
@@ -186,7 +200,9 @@ const nextBtn = document.getElementById('op-next');
       ? `${currentIndex + 1} / ${PROJECTS.length}`
       : '';
     document.querySelectorAll('.op-sidebar-item').forEach((el, i) => {
-      el.classList.toggle('active', i === currentIndex);
+      const isActive = i === currentIndex;
+      el.classList.toggle('active', isActive);
+      el.setAttribute('aria-pressed', String(isActive));
     });
   }
 
@@ -200,22 +216,7 @@ const nextBtn = document.getElementById('op-next');
       closeSidebar();
       return;
     }
-    if (isLightboxOpen()) {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        changeLightboxSlide(-1);
-        return;
-      }
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        changeLightboxSlide(1);
-        return;
-      }
-      if (e.key === 'Escape') {
-        closeLightbox();
-        return;
-      }
-    }
+    if (isLightboxOpen()) return;
     if (e.key === 'ArrowLeft')  opNavigate(-1);
     if (e.key === 'ArrowRight') opNavigate(1);
   });
@@ -232,208 +233,9 @@ const nextBtn = document.getElementById('op-next');
     }
   });
 
-  /* ── CARRUSEL ── */
-  function initCarousel(id) {
-    const carousel = document.getElementById(id);
-    if (!carousel) return;
-    const slides = carousel.querySelectorAll('.carousel-slide');
-    const dotsContainer = document.getElementById('dots-' + id);
-    if (!dotsContainer) return;
-    dotsContainer.innerHTML = '';
-    if (slides.length === 0) {
-      carousel.style.display = 'none';
-      return;
-    }
-    carousel.style.display = '';
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-      dot.onclick = () => goToSlide(id, i);
-      dotsContainer.appendChild(dot);
-    });
-    if (slides.length === 1) {
-      carousel.querySelector('.prev').style.display = 'none';
-      carousel.querySelector('.next').style.display = 'none';
-    }
-  const track = carousel.querySelector('.carousel-track');
-  if (track && !track.dataset.bound) {
-    track.dataset.bound = 'true';
-    const syncActiveDot = () => syncCarouselDots(id);
-    const rebuildDots = () => {
-      buildCarouselDots(id);
-      syncCarouselDots(id);
-    };
-    track.addEventListener('scroll', () => {
-      if (track._raf) cancelAnimationFrame(track._raf);
-      track._raf = requestAnimationFrame(syncActiveDot);
-    });
-    window.addEventListener('resize', rebuildDots);
-  }
-    buildCarouselDots(id);
-    syncCarouselDots(id);
-  }
-
   function isLightboxOpen() {
+    const lightbox = document.getElementById('image-lightbox');
     return !!lightbox && lightbox.classList.contains('open');
-  }
-
-  function clampLightboxPan() {
-    if (!lightboxImage) return;
-    if (lightboxZoom.scale <= 1) {
-      lightboxZoom.x = 0;
-      lightboxZoom.y = 0;
-      return;
-    }
-    const maxX = Math.max(0, (lightboxImage.clientWidth * (lightboxZoom.scale - 1)) / 2);
-    const maxY = Math.max(0, (lightboxImage.clientHeight * (lightboxZoom.scale - 1)) / 2);
-    lightboxZoom.x = Math.max(-maxX, Math.min(maxX, lightboxZoom.x));
-    lightboxZoom.y = Math.max(-maxY, Math.min(maxY, lightboxZoom.y));
-  }
-
-  function applyLightboxTransform() {
-    if (!lightboxImage || !lightboxFrame) return;
-    clampLightboxPan();
-    lightboxImage.style.transform = `translate(${lightboxZoom.x}px, ${lightboxZoom.y}px) scale(${lightboxZoom.scale})`;
-    lightboxFrame.classList.toggle('zoomed', lightboxZoom.scale > 1);
-    lightboxFrame.classList.toggle('is-dragging', !!lightboxZoom.dragging);
-  }
-
-  function resetLightboxZoom() {
-    lightboxZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0 };
-    applyLightboxTransform();
-  }
-
-  function setLightboxZoom(nextScale) {
-    lightboxZoom.scale = Math.max(1, Math.min(4, nextScale));
-    if (lightboxZoom.scale === 1) {
-      lightboxZoom.x = 0;
-      lightboxZoom.y = 0;
-    }
-    applyLightboxTransform();
-  }
-
-  function getCarouselSlides(id) {
-    const carousel = id ? document.getElementById(id) : null;
-    return carousel ? Array.from(carousel.querySelectorAll('.carousel-slide')) : [];
-  }
-
-  function renderLightbox() {
-    if (!lightbox || !lightboxImage || !lightboxCounter || !lightboxCaption) return;
-    const slides = getCarouselSlides(lightboxState.carouselId);
-    const slide = slides[lightboxState.index];
-    if (!slide) return;
-    const image = slide.querySelector('img');
-    const caption = slide.querySelector('.slide-caption');
-    lightboxImage.src = image ? image.src : '';
-    lightboxImage.alt = image?.alt || 'Imagen ampliada del proyecto';
-    lightboxCounter.textContent = `${lightboxState.index + 1} / ${slides.length}`;
-    lightboxCaption.textContent = caption ? caption.textContent.trim() : (image?.alt || '');
-    if (lightboxPrev) lightboxPrev.style.visibility = slides.length > 1 ? 'visible' : 'hidden';
-    if (lightboxNext) lightboxNext.style.visibility = slides.length > 1 ? 'visible' : 'hidden';
-    resetLightboxZoom();
-    lightbox.classList.add('open');
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function openLightbox(carouselId, index) {
-    const slides = getCarouselSlides(carouselId);
-    if (!slides.length) return;
-    lightboxState = { carouselId, index };
-    renderLightbox();
-  }
-
-  function changeLightboxSlide(delta) {
-    const slides = getCarouselSlides(lightboxState.carouselId);
-    if (slides.length <= 1) return;
-    lightboxState.index = (lightboxState.index + delta + slides.length) % slides.length;
-    renderLightbox();
-  }
-
-  function closeLightbox() {
-    if (!lightbox) return;
-    lightbox.classList.remove('open');
-    lightbox.setAttribute('aria-hidden', 'true');
-    resetLightboxZoom();
-    if (lightboxImage) lightboxImage.src = '';
-    if (lightboxCaption) lightboxCaption.textContent = '';
-    lightboxState = { carouselId: null, index: 0 };
-    document.body.style.overflow = '';
-  }
-
-  if (viewer) {
-    viewer.addEventListener('click', event => {
-      const image = event.target.closest('.carousel-slide img');
-      if (!image || !viewer.contains(image)) return;
-      const slide = image.closest('.carousel-slide');
-      const carousel = image.closest('.carousel');
-      if (!slide || !carousel) return;
-      const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
-      openLightbox(carousel.id, slides.indexOf(slide));
-    });
-  }
-
-  function moveCarousel(id, dir) {
-    const carousel = document.getElementById(id);
-    const track = carousel ? carousel.querySelector('.carousel-track') : null;
-    if (!track) return;
-    track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' });
-  }
-
-  function getCurrentSlide(id, total) {
-    const carousel = document.getElementById(id);
-    const track = carousel ? carousel.querySelector('.carousel-track') : null;
-    if (!track || total === 0) return 0;
-    const page = Math.round(track.scrollLeft / track.clientWidth);
-    return Math.max(0, Math.min(total - 1, page));
-  }
-
-  function goToSlide(id, index) {
-    const carousel = document.getElementById(id);
-    const track = carousel ? carousel.querySelector('.carousel-track') : null;
-    const pages = getCarouselPageCount(id);
-    if (!track || pages === 0) return;
-    const target = Math.max(0, Math.min(pages - 1, index));
-    track.scrollTo({ left: target * track.clientWidth, behavior: 'smooth' });
-    syncCarouselDots(id);
-  }
-
-  function getCarouselPageCount(id) {
-    const carousel = document.getElementById(id);
-    const track = carousel ? carousel.querySelector('.carousel-track') : null;
-    if (!track) return 0;
-    const total = track.scrollWidth;
-    const viewport = track.clientWidth;
-    if (!total || !viewport) return 0;
-    return Math.max(1, Math.ceil(total / viewport));
-  }
-
-  function buildCarouselDots(id) {
-    const carousel = document.getElementById(id);
-    const dotsContainer = document.getElementById('dots-' + id);
-    if (!carousel || !dotsContainer) return;
-    const pages = getCarouselPageCount(id);
-    if (pages === 0) return;
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < pages; i++) {
-      const dot = document.createElement('button');
-      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-      dot.onclick = () => goToSlide(id, i);
-      dotsContainer.appendChild(dot);
-    }
-  }
-
-  function syncCarouselDots(id) {
-    const carousel = document.getElementById(id);
-    if (!carousel) return;
-    const dots = carousel.querySelectorAll('.carousel-dot');
-    const pages = getCarouselPageCount(id);
-    const current = getCurrentSlide(id, pages);
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    const prev = carousel.querySelector('.prev');
-    const next = carousel.querySelector('.next');
-    if (prev) prev.disabled = current === 0;
-    if (next) next.disabled = current >= Math.max(0, pages - 1);
   }
 
   // Inicializar
@@ -456,50 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lo envolvemos en un pequeño timeout para que el navegador respire
     window.requestAnimationFrame(() => opLoad(0));
 });
-
-  if (lightboxImage && lightboxFrame) {
-    lightboxImage.addEventListener('load', applyLightboxTransform);
-
-    lightboxImage.addEventListener('dblclick', event => {
-      event.preventDefault();
-      setLightboxZoom(lightboxZoom.scale > 1 ? 1 : 2.5);
-    });
-
-    lightboxFrame.addEventListener('wheel', event => {
-      if (!isLightboxOpen()) return;
-      event.preventDefault();
-      const delta = event.deltaY < 0 ? 0.25 : -0.25;
-      setLightboxZoom(lightboxZoom.scale + delta);
-    }, { passive: false });
-
-    lightboxImage.addEventListener('pointerdown', event => {
-      if (lightboxZoom.scale <= 1) return;
-      event.preventDefault();
-      lightboxZoom.dragging = true;
-      lightboxZoom.startX = event.clientX - lightboxZoom.x;
-      lightboxZoom.startY = event.clientY - lightboxZoom.y;
-      lightboxImage.setPointerCapture?.(event.pointerId);
-      applyLightboxTransform();
-    });
-
-    lightboxImage.addEventListener('pointermove', event => {
-      if (!lightboxZoom.dragging) return;
-      lightboxZoom.x = event.clientX - lightboxZoom.startX;
-      lightboxZoom.y = event.clientY - lightboxZoom.startY;
-      applyLightboxTransform();
-    });
-
-    const stopLightboxDrag = event => {
-      if (!lightboxZoom.dragging) return;
-      lightboxZoom.dragging = false;
-      lightboxImage.releasePointerCapture?.(event.pointerId);
-      applyLightboxTransform();
-    };
-
-    lightboxImage.addEventListener('pointerup', stopLightboxDrag);
-    lightboxImage.addEventListener('pointercancel', stopLightboxDrag);
-    lightboxImage.addEventListener('pointerleave', stopLightboxDrag);
-  }
 
   /* ── CARGAR COMPONENTES ── */
   function initNavigation() {

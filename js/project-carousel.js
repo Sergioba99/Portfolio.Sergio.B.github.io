@@ -1,6 +1,7 @@
 (function () {
   const lightboxState = { carouselId: null, index: 0 };
   let lightboxZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0 };
+  let lastFocusedElement = null;
 
   const getLightbox = () => document.getElementById('image-lightbox');
   const getLightboxImage = () => document.getElementById('lightbox-image');
@@ -16,8 +17,8 @@
     const carousel = id ? document.getElementById(id) : null;
     const track = carousel ? carousel.querySelector('.carousel-track') : null;
     if (!track) return 0;
-    const slides = carousel.querySelectorAll('.carousel-slide');
-    return slides.length;
+    if (!track.scrollWidth || !track.clientWidth) return 0;
+    return Math.max(1, Math.ceil(track.scrollWidth / track.clientWidth));
   }
 
   function getCurrentSlide(id, total) {
@@ -88,11 +89,15 @@
     lightbox.classList.add('open');
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+
+    const closeButton = lightbox.querySelector('.image-lightbox-panel > button');
+    closeButton?.focus();
   }
 
   function openLightbox(carouselId, index) {
     const slides = getCarouselSlides(carouselId);
     if (!slides.length) return;
+    lastFocusedElement = document.activeElement;
     lightboxState.carouselId = carouselId;
     lightboxState.index = index;
     renderLightbox();
@@ -111,6 +116,11 @@
     lightboxState.carouselId = null;
     lightboxState.index = 0;
     document.body.style.overflow = '';
+
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
+    }
+    lastFocusedElement = null;
   }
 
   function changeLightboxSlide(delta) {
@@ -245,6 +255,25 @@
       if (event.target.id === 'image-lightbox') closeLightbox();
     });
   }
+  document.addEventListener('keydown', event => {
+    const currentLightbox = getLightbox();
+    if (!currentLightbox || !currentLightbox.classList.contains('open')) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeLightbox();
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      changeLightboxSlide(-1);
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      changeLightboxSlide(1);
+    }
+  });
   if (lightboxImage && lightboxFrame) {
     lightboxImage.addEventListener('load', applyLightboxTransform);
     lightboxImage.addEventListener('dblclick', event => {

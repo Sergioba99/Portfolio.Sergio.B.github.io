@@ -97,15 +97,22 @@ function highlightActiveLink() {
         if (!href) return;
 
         link.classList.remove('active');
+        link.removeAttribute('aria-current');
 
         if (href.startsWith('#')) {
-            if (href === currentHash) link.classList.add('active');
+            if (href === currentHash) {
+                link.classList.add('active');
+                link.setAttribute('aria-current', 'location');
+            }
             return;
         }
 
         const url = new URL(resolveUrl(href), window.location.origin);
         const isSamePath = url.pathname.replace(/\/+$/, '') === currentPath.replace(/\/+$/, '');
-        if (isSamePath) link.classList.add('active');
+        if (isSamePath) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+        }
     });
 }
 

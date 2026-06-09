@@ -59,7 +59,11 @@
 
     const token = ++loadToken;
     currentIndex = index;
-    btns.forEach((b, i) => b.classList.toggle('active', i === index));
+    btns.forEach((b, i) => {
+      const isActive = i === index;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
     updateControls();
     window.closeLightbox?.();
     if (viewer) viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
