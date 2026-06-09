@@ -45,8 +45,10 @@ async function loadComponent(id, url) {
         });
 
         el.innerHTML = tempDiv.innerHTML;
-        if (id === 'main-nav') initNavigation();
-        if (id === 'main-nav') highlightActiveLink();
+        if (id === 'main-nav') {
+            initNavigation();
+            highlightActiveLink();
+        }
         
     } catch (err) {
         console.error(`[Fallo Crítico] No se pudo cargar ${id}:`, err);

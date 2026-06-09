@@ -24,7 +24,6 @@ const FETCH_CACHE = new Map();
 // 1. Detección Automática de Entorno
 const isGitHub = window.location.hostname.includes('github.io');
 const REPO_NAME = isGitHub ? '/' + window.location.pathname.split('/')[1] : '';
-console.log(REPO_NAME);
 const isInSubfolder = window.location.pathname.includes('/html/');
 
 const BASE = window.location.origin + REPO_NAME;
@@ -123,14 +122,6 @@ async function opLoad(index) {
     }
 }
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    buildSidebar();
-    loadComponent('main-nav', 'html/navigation.html');
-    loadComponent('main-footer', 'html/footer.html');
-    setTimeout(() => opLoad(0), 100);
-});
-
 // A partir de aquí, mantén tus funciones de Sidebar y Carrusel (SIN duplicar loadComponent ni opLoad)
 
 function highlightActiveLink() {
@@ -197,48 +188,6 @@ const nextBtn = document.getElementById('op-next');
     document.querySelectorAll('.op-sidebar-item').forEach((el, i) => {
       el.classList.toggle('active', i === currentIndex);
     });
-  }
-
-  function scheduleProjectWindowPrefetch(centerIndex) {
-    const run = () => syncProjectWindow(centerIndex);
-    if (window.requestIdleCallback) {
-      window.requestIdleCallback(run, { timeout: 1200 });
-    } else {
-      setTimeout(run, 400);
-    }
-  }
-
-  const normalizePath = (base, path) => {
-    // Eliminamos la barra final de la base si existe
-    const cleanBase = base.replace(/\/+$/, '');
-    // Eliminamos la barra inicial del path si existe
-    const cleanPath = path.replace(/^\/+/, '');
-    
-    return `${cleanBase}/${cleanPath}`;
-};
-
-  function syncProjectWindow(centerIndex) {
-    const desiredUrls = new Set();
-    const start = Math.max(0, centerIndex - PROJECT_PREFETCH_RADIUS);
-    const end = Math.min(PROJECTS.length - 1, centerIndex + PROJECT_PREFETCH_RADIUS);
-
-    for (let i = start; i <= end; i++) {
-        // Aplicamos la normalización y la versión de asset
-        const fullPath = normalizePath(BASE, PROJECTS[i].file);
-        desiredUrls.add(`${fullPath}?v=${ASSET_VERSION}`);
-    }
-
-    // Ejecución de la precarga
-    desiredUrls.forEach(url => {
-        fetchTextCached(url).catch(() => {});
-    });
-
-    for (const key of FETCH_CACHE.keys()) {
-      if (!key.includes('/projects/')) continue;
-      if (!desiredUrls.has(key)) {
-        FETCH_CACHE.delete(key);
-      }
-    }
   }
 
   function opNavigate(dir) {
@@ -500,15 +449,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Cargar Navegación y Footer
     // Usamos una versión simplificada de carga para asegurar que no bloquee el resto
-    loadComponent('main-nav', `${navPath}?v=${ASSET_VERSION}`);
-    loadComponent('main-footer', `${footerPath}?v=${ASSET_VERSION}`);
+    loadComponent('main-nav', navPath);
+    loadComponent('main-footer', footerPath);
 
     // 4. Cargar el primer proyecto automáticamente al entrar
     // Lo envolvemos en un pequeño timeout para que el navegador respire
-    setTimeout(() => {
-        console.log("Cargando primer proyecto automáticamente...");
-        opLoad(0);
-    }, 100);
+    window.requestAnimationFrame(() => opLoad(0));
 });
 
   if (lightboxImage && lightboxFrame) {
@@ -593,4 +539,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nav.dataset.initialized = 'true';
   }
-

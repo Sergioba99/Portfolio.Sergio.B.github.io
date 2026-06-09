@@ -13,6 +13,7 @@
 
   let currentIndex = 0;
   let nextButtonMode = 'project';
+  let loadToken = 0;
 
   const viewer = document.getElementById('pv-viewer');
   const btns = document.querySelectorAll('.pv-btn');
@@ -53,14 +54,18 @@
   }
 
   function loadProject(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= PROJECTS.length) return;
+    if (index === currentIndex && viewer && !viewer.querySelector('.pv-loading')) return;
+
+    const token = ++loadToken;
     currentIndex = index;
     btns.forEach((b, i) => b.classList.toggle('active', i === index));
     updateControls();
-    closeLightbox();
+    window.closeLightbox?.();
     if (viewer) viewer.innerHTML = '<div class="pv-loading">Cargando...</div>';
     fetchTextCached(`${PROJECTS[index]}?v=${ASSET_VERSION}`)
       .then(html => {
-        if (!viewer) return;
+        if (!viewer || token !== loadToken) return;
         viewer.innerHTML = html;
         window.ProjectVideo?.init(viewer);
         viewer.classList.remove('pv-fade');
@@ -69,6 +74,7 @@
         window.ProjectCarousel?.init(viewer);
       })
       .catch(() => {
+        if (token !== loadToken) return;
         if (viewer) viewer.innerHTML = '<div class="pv-loading">No se pudo cargar el proyecto.</div>';
       });
   }
@@ -113,7 +119,11 @@
 
   function init() {
     loadProject(0);
-    preloadProjectFragments();
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(preloadProjectFragments, { timeout: 1500 });
+    } else {
+      window.setTimeout(preloadProjectFragments, 300);
+    }
   }
 
   if (document.readyState === 'loading') {

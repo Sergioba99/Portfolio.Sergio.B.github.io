@@ -23,6 +23,29 @@ const COURSES = [
     
 ];
 
+let scrollRaf = 0;
+let resizeRaf = 0;
+
+function scheduleScrollUpdate() {
+    if (scrollRaf) return;
+    scrollRaf = window.requestAnimationFrame(() => {
+        scrollRaf = 0;
+        updateScrollMasks();
+        updateActiveDot();
+        updateCarouselNavigation();
+    });
+}
+
+function scheduleResizeUpdate() {
+    if (resizeRaf) window.cancelAnimationFrame(resizeRaf);
+    resizeRaf = window.requestAnimationFrame(() => {
+        resizeRaf = 0;
+        setupDots();
+        updateScrollMasks();
+        updateCarouselNavigation();
+    });
+}
+
 /**
  * Comprueba si el ancho total de las tarjetas desborda el contenedor visible
  * y activa o desactiva las flechas de navegación.
@@ -63,7 +86,7 @@ function updateCarouselNavigation() {
 function setupDots() {
     const grid = document.getElementById('courses-grid');
     const container = document.querySelector('.carousel-container');
-    const oldDots = document.querySelector('.carousel-dots');
+    const oldDots = document.querySelector('.course-dots');
     if (oldDots) oldDots.remove();
 
     if (!grid || !container || window.innerWidth > 1024) return;
@@ -72,7 +95,7 @@ function setupDots() {
     if (cards.length === 0) return;
 
     const dotsContainer = document.createElement('div');
-    dotsContainer.className = 'carousel-dots';
+    dotsContainer.className = 'carousel-dots course-dots';
     
     // Creamos exactamente un punto por cada tarjeta
     cards.forEach((_, i) => {
@@ -94,9 +117,10 @@ function setupDots() {
 
 function updateActiveDot() {
     const grid = document.getElementById('courses-grid');
+    if (!grid) return;
     const dots = document.querySelectorAll('.dot');
     const cards = grid.querySelectorAll('.course-card');
-    if (!grid || dots.length === 0 || cards.length === 0) return;
+    if (dots.length === 0 || cards.length === 0) return;
 
     // Buscamos qué tarjeta está más cerca del centro visual del contenedor
     const containerCenter = grid.scrollLeft + (grid.offsetWidth / 2);
@@ -161,10 +185,9 @@ function updateScrollMasks() {
 // Asegúrate de añadir los listeners
 const grid = document.getElementById('courses-grid');
 if (grid) {
-    grid.addEventListener('scroll', updateScrollMasks);
-    grid.addEventListener('scroll', updateActiveDot);
+    grid.addEventListener('scroll', scheduleScrollUpdate, { passive: true });
 }
-window.addEventListener('resize', updateScrollMasks);
+window.addEventListener('resize', scheduleResizeUpdate);
 
 function renderCourses() {
     const grid = document.getElementById('courses-grid');
@@ -194,7 +217,10 @@ function renderCourses() {
 
     // 2. Ejecutar lógica de navegación inicial
     // Usamos un pequeño timeout para asegurar que el DOM ha calculado los anchos correctamente
-    setTimeout(updateCarouselNavigation, 10);
+    window.requestAnimationFrame(() => {
+        updateScrollMasks();
+        updateCarouselNavigation();
+    });
 
     // 3. Configurar eventos de clic
     const getScrollAmount = () => {
@@ -216,14 +242,9 @@ function renderCourses() {
     }
 
     setupDots();
-    window.addEventListener('resize', () => {
-        setupDots();
-        updateCarouselNavigation();
-    });
 }
 
 // Eventos de carga y cambio de tamaño
 document.addEventListener('DOMContentLoaded', renderCourses);
-window.addEventListener('resize', updateCarouselNavigation);
 // Ejecutar una vez al cargar
 updateScrollMasks();
