@@ -410,7 +410,7 @@ h2 {
   color: var(--muted);
   font-size: 16px;
   line-height: 1.9;
-  max-width: 760px;
+  max-width: 940px;
 }
 .about-text strong { color: var(--text); font-weight: 500; }
 
@@ -421,11 +421,11 @@ h2 {
 
 .prose-card,
 .contribution-card {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
+  background: linear-gradient(180deg, rgba(16, 28, 48, 0.34), rgba(11, 20, 36, 0.22));
+  border: 1px solid rgba(158, 177, 211, 0.08);
+  border-radius: 22px;
   box-shadow: none;
-  padding: 0;
+  padding: 26px 28px;
   position: relative;
 }
 
@@ -437,10 +437,7 @@ h2 {
   width: 100%;
 }
 .contribution-card {
-  padding: 0;
-}
-.contribution-intro {
-  margin-bottom: 14px;
+  padding: 26px 28px;
 }
 .contribution-list {
   margin: 0;
@@ -449,7 +446,7 @@ h2 {
   list-style: none;
   display: grid;
   gap: 12px;
-  max-width: 900px;
+  max-width: 960px;
 }
 .contribution-list li {
   position: relative;
@@ -1378,7 +1375,7 @@ footer {
   }
   .prose-card,
   .contribution-card {
-    padding-left: 0;
+    padding: 22px 18px;
   }
   .project-card {
     padding: 24px 20px;
