@@ -25,17 +25,42 @@
 
     <div class="block">
       <div class="block-label">Arquitectura</div>
-      <div class="block-text">El sistema se apoya en OpenWebUI como frontend conversacional, sistema RAG y orquestador de herramientas; una base documental interna con plantillas y referencias; un repositorio de herramientas para IA; LM Studio como servidor local de modelos; y Docker para desplegar y aislar los componentes dentro del entorno corporativo.</div>
-    </div>
+      <svg width="100%" viewBox="0 0 820 240" xmlns="http://www.w3.org/2000/svg" style="margin-top:12px;max-width:760px;display:block;margin-left:auto;margin-right:auto;">
+        <defs>
+          <marker id="doc-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#7ea6ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="doc-arr-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#4b5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
 
-    <div class="block">
-      <div class="block-label">Flujo de trabajo</div>
-      <div class="block-text">1. El usuario solicita un documento técnico. 2. El sistema busca referencias, plantillas y documentación histórica relevante. 3. Recupera el contexto útil y lo inyecta en el prompt. 4. El LLM genera un borrador estructurado. 5. El documento pasa a revisión técnica humana obligatoria antes de usarse.</div>
-    </div>
+        <rect x="18" y="90" width="150" height="60" rx="10" fill="#1f2937" stroke="#4b5563" stroke-width="1.2"/>
+        <text x="93" y="116" text-anchor="middle" fill="#f5f8ff" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="600">Base documental</text>
+        <text x="93" y="135" text-anchor="middle" fill="#a7b3c8" font-family="Manrope, sans-serif" font-size="11">Plantillas y referencias</text>
 
-    <div class="block">
-      <div class="block-label">Claves del diseño</div>
-      <div class="block-text">La solución no sustituye la validación humana ni toma decisiones técnicas autónomas. Su objetivo es acelerar la redacción, mejorar la coherencia documental y reutilizar conocimiento interno sin exponer información sensible fuera del entorno local.</div>
+        <rect x="18" y="168" width="150" height="46" rx="10" fill="#1f2937" stroke="#4b5563" stroke-width="1.2"/>
+        <text x="93" y="196" text-anchor="middle" fill="#a7b3c8" font-family="Manrope, sans-serif" font-size="12">Gobernanza de prompts</text>
+
+        <rect x="208" y="76" width="176" height="88" rx="14" fill="#1f2937" stroke="#7ea6ff" stroke-width="1.6"/>
+        <text x="296" y="108" text-anchor="middle" fill="#f5f8ff" font-family="Space Grotesk, sans-serif" font-size="20" font-weight="600">OpenWebUI</text>
+        <text x="296" y="130" text-anchor="middle" fill="#7ea6ff" font-family="Manrope, sans-serif" font-size="12">Interfaz + RAG + orquestador</text>
+
+        <rect x="446" y="76" width="150" height="88" rx="14" fill="#1f2937" stroke="#7ea6ff" stroke-width="1.6"/>
+        <text x="521" y="108" text-anchor="middle" fill="#f5f8ff" font-family="Space Grotesk, sans-serif" font-size="20" font-weight="600">LM Studio</text>
+        <text x="521" y="130" text-anchor="middle" fill="#7ea6ff" font-family="Manrope, sans-serif" font-size="12">Servidor de IA local</text>
+
+        <rect x="648" y="76" width="154" height="88" rx="14" fill="#1f2937" stroke="#4b5563" stroke-width="1.2"/>
+        <text x="725" y="108" text-anchor="middle" fill="#f5f8ff" font-family="Space Grotesk, sans-serif" font-size="18" font-weight="600">Docker</text>
+        <text x="725" y="130" text-anchor="middle" fill="#a7b3c8" font-family="Manrope, sans-serif" font-size="12">Aislamiento y despliegue</text>
+
+        <line x1="168" y1="120" x2="204" y2="120" stroke="#4b5563" stroke-width="1.5" marker-end="url(#doc-arr-dim)"/>
+        <line x1="384" y1="120" x2="442" y2="120" stroke="#7ea6ff" stroke-width="1.8" marker-end="url(#doc-arr)"/>
+        <line x1="596" y1="120" x2="644" y2="120" stroke="#7ea6ff" stroke-width="1.8" marker-end="url(#doc-arr)"/>
+
+        <path d="M 118 164 L 118 214 L 296 214 L 296 164" fill="none" stroke="#4b5563" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#doc-arr-dim)"/>
+        <text x="207" y="232" text-anchor="middle" fill="#a7b3c8" font-family="Manrope, sans-serif" font-size="11">Borradores con validación humana obligatoria</text>
+      </svg>
     </div>
 
     <div class="block">
@@ -51,7 +76,6 @@
       <span class="badge">Documentación técnica</span>
       <span class="badge">On-Premise</span>
       <span class="badge">Plantillas</span>
-      <span class="badge">Revisión humana</span>
     </div>
   </div>
 </div>
