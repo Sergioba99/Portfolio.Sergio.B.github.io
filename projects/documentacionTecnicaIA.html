@@ -1,0 +1,57 @@
+<!-- 06 — Generador de documentación técnica con IA -->
+<div class="pv-panel">
+  <div class="project-card wip">
+    <div class="card-top">
+      <div class="card-tags">
+        <span class="tag">OpenWebUI</span>
+        <span class="tag">RAG</span>
+        <span class="tag">LM Studio</span>
+        <span class="tag-wip">Prácticas IA</span>
+      </div>
+    </div>
+
+    <div class="project-title">Generador de documentación técnica con IA</div>
+    <div class="project-subtitle">MVP local de generación asistida de documentación técnica desarrollado durante las prácticas del curso de inteligencia artificial, con arquitectura on-premise para proteger información industrial sensible.</div>
+
+    <div class="block">
+      <div class="block-label">Reto</div>
+      <div class="block-text">La redacción manual de documentación técnica consume mucho tiempo, depende de una buena organización documental y exige coherencia terminológica. Además, el material puede contener información industrial sensible, por lo que no resulta adecuado enviarlo a servicios externos.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Solución</div>
+      <div class="block-text">Se montó una solución local que permite recibir solicitudes, consultar documentación histórica mediante RAG, recuperar plantillas y referencias relevantes y generar borradores estructurados con un LLM. OpenWebUI actúa como interfaz y orquestador, LM Studio como servidor de inferencia y Docker como capa de despliegue y aislamiento de servicios.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Arquitectura</div>
+      <div class="block-text">El sistema se apoya en OpenWebUI como frontend conversacional, sistema RAG y orquestador de herramientas; una base documental interna con plantillas y referencias; un repositorio de herramientas para IA; LM Studio como servidor local de modelos; y Docker para desplegar y aislar los componentes dentro del entorno corporativo.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Flujo de trabajo</div>
+      <div class="block-text">1. El usuario solicita un documento técnico. 2. El sistema busca referencias, plantillas y documentación histórica relevante. 3. Recupera el contexto útil y lo inyecta en el prompt. 4. El LLM genera un borrador estructurado. 5. El documento pasa a revisión técnica humana obligatoria antes de usarse.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Claves del diseño</div>
+      <div class="block-text">La solución no sustituye la validación humana ni toma decisiones técnicas autónomas. Su objetivo es acelerar la redacción, mejorar la coherencia documental y reutilizar conocimiento interno sin exponer información sensible fuera del entorno local.</div>
+    </div>
+
+    <div class="block">
+      <div class="block-label">Estado actual</div>
+      <div class="block-text">El MVP quedó planteado y funcional como base de trabajo durante las prácticas. A partir de ahí puede seguir ampliándose la base documental, refinando prompts y plantillas y añadiendo nuevas herramientas o casos de uso sobre la misma arquitectura local.</div>
+    </div>
+
+    <div class="badges">
+      <span class="badge main">OpenWebUI</span>
+      <span class="badge main">LM Studio</span>
+      <span class="badge main">RAG</span>
+      <span class="badge main">Docker</span>
+      <span class="badge">Documentación técnica</span>
+      <span class="badge">On-Premise</span>
+      <span class="badge">Plantillas</span>
+      <span class="badge">Revisión humana</span>
+    </div>
+  </div>
+</div>

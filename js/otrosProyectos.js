@@ -14,6 +14,7 @@
 const PROJECTS = [
     {name: "Prompt Template Library", sub: "YAML · PySide6 · SQLite", file: "projects/promptTemplateLibrary.html"},
     {name: "Fan Control", sub: "ESP32 · Arduino", file: "projects/fanControl.html"},
+    {name: "RepliTal", sub: "PyTorch · Audio ML", file: "projects/replital.html"},
     {name: "RepliTal Avatar", sub: "Avatar IA · Presentación", file: "projects/replitalAvatar.html"},
     {name: "Chatbot del portfolio", sub: "Chatbase · Integración web", file: "projects/chatbotPortfolio.html"},
 ];

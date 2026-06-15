@@ -4,7 +4,7 @@
 
   const PROJECTS = [
     'projects/tfg.html',
-    'projects/replital.html',
+    'projects/documentacionTecnicaIA.html',
     'projects/fuzzyLibrary.html',
     'projects/TransportMe.html',
     'projects/DS3SaveBackup.html'
