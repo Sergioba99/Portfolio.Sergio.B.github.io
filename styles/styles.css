@@ -500,16 +500,17 @@ h2 {
 
 /* ── PROJECT CARDS ── */
 .project-card {
-  border-left: 3px solid var(--accent);
+  border: 1px solid rgba(158, 177, 211, 0.12);
   padding: 34px;
   margin-bottom: 20px;
   overflow: hidden;
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.project-card.wip { border-left-color: var(--amber); }
+.project-card.wip { border-color: rgba(242, 184, 75, 0.32); }
 .project-card:hover {
   box-shadow: 0 10px 18px rgba(4, 10, 22, 0.10);
+  border-color: rgba(126, 166, 255, 0.22);
 }
 .project-card::before {
   content: '';
