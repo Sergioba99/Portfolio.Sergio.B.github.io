@@ -508,10 +508,6 @@ h2 {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .project-card.wip { border-color: rgba(242, 184, 75, 0.32); }
-.project-card:hover {
-  box-shadow: 0 10px 18px rgba(4, 10, 22, 0.10);
-  border-color: rgba(126, 166, 255, 0.22);
-}
 .project-card::before {
   content: '';
   position: absolute;
@@ -598,8 +594,21 @@ h2 {
   font-size: 13px;
   color: var(--muted);
   line-height: 1.7;
-  max-width: 800px;
+  max-width: none;
+  width: 100%;
   overflow-wrap: anywhere;
+}
+
+.project-card .block-text {
+  max-width: none;
+}
+
+.project-card .block svg,
+.op-viewer .block svg,
+#pv-viewer .block svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── CARRUSEL ── */
@@ -630,9 +639,6 @@ h2 {
   padding: 14px;
   position: relative;
   scroll-snap-align: start;
-}
-.carousel-slide:hover img {
-  border-color: var(--accent);
 }
 .carousel-slide img {
   width: 100%;
