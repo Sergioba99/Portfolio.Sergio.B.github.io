@@ -322,6 +322,16 @@
     if (inputEl) {
       inputEl.disabled = !apiBaseUrl;
     }
+
+    window.portfolioChatbot = {
+      open: openPanel,
+      close: closePanel,
+      toggle: togglePanel,
+      reset: resetHistory,
+      get isOpen() {
+        return state.open;
+      },
+    };
   }
 
   function handleGlobalKeydown(event) {
